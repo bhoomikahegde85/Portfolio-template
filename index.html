@@ -24,6 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="styles.css" />
 </head>
@@ -94,9 +95,6 @@
       <h1 id="hero-name" class="hero-name">Bhoomika R Hegde</h1>
 
       <p class="hero-subtitle">
-        <span>AIML Engineer</span><span class="hero-sep" aria-hidden="true">·</span>
-        <span>Researcher</span><span class="hero-sep" aria-hidden="true">·</span>
-        <span>Builder</span>
       <!-- ✏️ Update your links below -->
       <nav class="hero-links" aria-label="Social and contact links">
         <a href="mailto:bhoomikahegde85@gmail.com" class="hero-link">
@@ -145,10 +143,44 @@
     </div>
   </section>
 
+ <!-- ============================================================
+       PUBLICATIONS
+       ============================================================ -->
+       <section class="section" id="publications" aria-labelledby="publications-heading">
+        <div class="section-inner">
+          <h2 class="section-label" id="publications-heading"><span class="label-stitch" aria-hidden="true"></span>Publications</h2>
+          <div class="section-body">
+            <ol class="pub-list" role="list" reversed>
+    
+              <!-- ✏️ Edit or duplicate .pub-item blocks below -->
+    
+              <li class="pub-item reveal">
+                <div class="pub-year">2026</div>
+                <div class="pub-details">
+                  <p class="pub-title">Discrete Representation Learning: A Review</p>
+                  <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>ICMLC 2026</em></p>
+                  <div class="pub-links"><span class="pub-badge pub-badge--accepted">Accepted</span></div>
+                </div>
+              </li>
+    
+              <li class="pub-item reveal">
+                <div class="pub-year">2025</div>
+                <div class="pub-details">
+                  <p class="pub-title">Transaction Graph-Based Predictive Hurdle Model for Credit Scoring in DeFi Lending Protocols</p>
+                  <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>IJDSA</em></p>
+                  <div class="pub-links"><span class="pub-badge">Under Review</span></div>
+                </div>
+              </li>
+    
+            </ol>
+          </div>
+        </div>
+      </section>
+
   <!-- ============================================================
        EXPERIENCE
        ============================================================ -->
-  <section class="section section--alt" id="experience" aria-labelledby="experience-heading">
+  <section class="section" id="experience" aria-labelledby="experience-heading">
     <div class="section-inner">
       <h2 class="section-label" id="experience-heading"><span class="label-stitch" aria-hidden="true"></span>Experience</h2>
       <div class="section-body">
@@ -265,7 +297,7 @@
        PROJECTS — interactive filter + flip-to-detail cards
        Each card links to its GitHub repo (data-repo attribute)
        ============================================================ -->
-  <section class="section section--alt" id="projects" aria-labelledby="projects-heading">
+  <section class="section" id="projects" aria-labelledby="projects-heading">
     <div class="section-inner">
       <h2 class="section-label" id="projects-heading"><span class="label-stitch" aria-hidden="true"></span>Projects</h2>
       <div class="section-body">
@@ -348,44 +380,12 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       PUBLICATIONS
-       ============================================================ -->
-  <section class="section" id="publications" aria-labelledby="publications-heading">
-    <div class="section-inner">
-      <h2 class="section-label" id="publications-heading"><span class="label-stitch" aria-hidden="true"></span>Publications</h2>
-      <div class="section-body">
-        <ol class="pub-list" role="list" reversed>
-
-          <!-- ✏️ Edit or duplicate .pub-item blocks below -->
-
-          <li class="pub-item reveal">
-            <div class="pub-year">2026</div>
-            <div class="pub-details">
-              <p class="pub-title">Discrete Representation Learning: A Review</p>
-              <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>ICMLC 2026</em></p>
-              <div class="pub-links"><span class="pub-badge pub-badge--accepted">Accepted</span></div>
-            </div>
-          </li>
-
-          <li class="pub-item reveal">
-            <div class="pub-year">2025</div>
-            <div class="pub-details">
-              <p class="pub-title">Transaction Graph-Based Predictive Hurdle Model for Credit Scoring in DeFi Lending Protocols</p>
-              <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>IJDSA</em></p>
-              <div class="pub-links"><span class="pub-badge">Under Review</span></div>
-            </div>
-          </li>
-
-        </ol>
-      </div>
-    </div>
-  </section>
+ 
 
   <!-- ============================================================
        SKILLS
        ============================================================ -->
-  <section class="section section--alt" id="skills" aria-labelledby="skills-heading">
+  <section class="section" id="skills" aria-labelledby="skills-heading">
     <div class="section-inner">
       <h2 class="section-label" id="skills-heading"><span class="label-stitch" aria-hidden="true"></span>Skills</h2>
       <div class="section-body skills-body reveal">
@@ -441,7 +441,7 @@
   <!-- ============================================================
        CONTACT
        ============================================================ -->
-  <section class="section section--alt" id="contact" aria-labelledby="contact-heading">
+  <section class="section" id="contact" aria-labelledby="contact-heading">
     <div class="section-inner">
       <h2 class="section-label" id="contact-heading"><span class="label-stitch" aria-hidden="true"></span>Contact</h2>
       <div class="section-body contact-body reveal">
