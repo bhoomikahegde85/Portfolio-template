@@ -7,6 +7,15 @@
 
 (function () {
   'use strict';
+  /* ── Page loader ─────────────────────────────────────────── */
+  var loader = document.getElementById('page-loader');
+  if (loader) {
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        loader.classList.add('hidden');
+      }, 1300);
+    });
+  }
 
   /* ── Footer year ─────────────────────────────────────────────── */
   var yearEl = document.getElementById('footer-year');
@@ -53,7 +62,7 @@
         });
       });
 
-      document.addEventListener('mouseleave', function () {d
+      document.addEventListener('mouseleave', function () {
         dot.style.opacity = '0';
         ring.style.opacity = '0';
       });

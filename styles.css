@@ -251,6 +251,10 @@ button { font: inherit; }
 }
 .hero-scroll:hover { color: var(--pink-deep); }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@media (max-width: 640px) {
+  .hero-scroll { display: none; }
+}
+
 
 /* ---------------------------------------------------------------- Sections */
 .section { padding: var(--section-gap) var(--page-pad); border-top: 1px solid var(--line); }
@@ -421,6 +425,53 @@ main > .section:nth-of-type(even) { background: var(--bg-alt); border-top-color:
 }
 .footer-inner p { font-family: var(--ff-mono); font-size: .78rem; color: var(--ink-soft); }
 .footer-note { opacity: .8; }
+/* ---------------------------------------------------------------- Page loader */
+#page-loader {
+  position: fixed; inset: 0; z-index: 9000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+#page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(55px); pointer-events: none;
+  animation: drift 4s ease-in-out infinite alternate;
+}
+.loader-blob--pink {
+  width: 260px; height: 200px; top: -40px; left: -40px;
+  background: radial-gradient(ellipse, var(--pink) 0%, transparent 72%);
+  opacity: .6;
+}
+.loader-blob--butter {
+  width: 220px; height: 220px; bottom: -40px; right: -40px;
+  background: radial-gradient(ellipse, var(--butter) 0%, transparent 72%);
+  opacity: .6; animation-delay: -2s;
+}
+.loader-inner {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+}
+.loader-initials {
+  font-family: var(--ff-display); font-size: 2.5rem; font-weight: 700;
+  background: var(--grad-text);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -.02em;
+}
+.loader-bar {
+  width: 120px; height: 2px;
+  background: var(--line); border-radius: 2px; overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%; width: 0%;
+  background: var(--grad-text); border-radius: 2px;
+  animation: load-bar 1.2s ease forwards;
+}
+@keyframes load-bar {
+  0%   { width: 0%; }
+  60%  { width: 75%; }
+  100% { width: 100%; }
+}
 
 /* ---------------------------------------------------------------- Print */
 @media print {
