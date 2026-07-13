@@ -432,8 +432,7 @@ main > .section:nth-of-type(even) { background: var(--bg-alt); border-top-color:
   display: flex; align-items: center; justify-content: center;
   transition: opacity .5s ease, visibility .5s ease;
 }
-#page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-.loader-blob {
+#page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; display: none; }.loader-blob {
   position: absolute; border-radius: 50%;
   filter: blur(55px); pointer-events: none;
   animation: drift 4s ease-in-out infinite alternate;
