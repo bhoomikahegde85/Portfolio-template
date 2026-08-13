@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Canine EEG Validation Framework - Research Case Study</title>
+<meta name="description" content="A validation-first canine EEG research case study auditing raw decoding, label provenance, confounds, dog-level generalization, and evidence boundaries." />
+<link rel="canonical" href="https://bhoomikahegde.com/research" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhoomikahegde.com/research" />
+<meta property="og:title" content="Canine EEG Validation Framework" />
+<meta property="og:description" content="A validation-first canine EEG analysis showing how raw decoding, label provenance, confounds, and dog-level nulls constrain what a classifier result can claim." />
+<meta property="og:image" content="https://bhoomikahegde.com/assets/profile.jpg" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://bhoomikahegde.com/research" />
+<meta name="twitter:title" content="Canine EEG Validation Framework" />
+<meta name="twitter:description" content="A validation-first canine EEG case study on claim boundaries, confounds, and dog-level decoding evidence." />
+<meta name="twitter:image" content="https://bhoomikahegde.com/assets/profile.jpg" />
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="research-page">
+<a class="skip-link" href="#research-article">Skip to content</a>
+
+<header class="research-topbar" role="banner">
+  <nav class="research-nav" aria-label="Research navigation">
+    <a href="/" class="research-brand">Bhoomika Hegde</a>
+    <a href="/" class="research-home">Home</a>
+  </nav>
+</header>
+
+<main id="research-article" class="research-article">
+  <article>
+    <header class="research-hero">
+      <h1>Canine EEG Validation Framework</h1>
+      <p class="research-dek">
+        A validation-first analysis of canine EEG machine learning, built to answer the question a serious research team should ask before optimizing a model: is the claim scientifically allowed?
+      </p>
+      <dl class="research-meta" aria-label="Article details">
+        <div>
+          <dt>Project</dt>
+          <dd>Canine EEG Validation Framework</dd>
+        </div>
+        <div>
+          <dt>Focus</dt>
+          <dd>Canine EEG validation</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>Evidence-boundary result</dd>
+        </div>
+      </dl>
+    </header>
+
+    <hr class="research-rule" />
+
+    <section class="research-section research-lead">
+      <p>
+        This project starts where many ML analyses should start: not with "can a model produce a number?", but with "does the evidence chain make that number scientifically interpretable?"
+      </p>
+      <p>
+        The work audits the full path from raw Neuroscan CNT files to dog-level model evaluation. It surfaces a raw decoding failure mode, unresolved condition-label provenance, heterogeneous event integrity, strong dog-identity structure, measurable session-position drift, baseline persistence, and leave-one-dog-out decoding that does not clear a within-dog null.
+      </p>
+      <p>
+        The conclusion is deliberately bounded. This work does not claim that canine EEG classifiers fail in general. It shows that, for this evidence package, broad biological interpretation of condition decoding is not yet justified. That boundary is the contribution: it tells future modeling exactly what must be fixed before the claim can become stronger.
+      </p>
+    </section>
+
+    <section class="research-section research-note">
+      <h2>Executive Thesis</h2>
+      <p>
+        The value of this work is not a higher score; it is a higher standard of evidence. In small biological datasets, a classifier can look promising while learning subject identity, recording structure, baseline amplitude, session order, or an unverified label map. This project treats those risks as first-class research problems.
+      </p>
+      <p>
+        That is the research judgment a serious technical team needs: design the analysis around the failure modes that would later weaken a paper, product, or platform claim. The study separates signal from shortcut, claim from artifact, and biological interpretation from statistical convenience.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>Key Findings</h2>
+      <ol class="research-list research-list--numbered">
+        <li><strong>Raw signal integrity had to be proven, not assumed.</strong> A potential 32-bit CNT decoding failure mode was identified in an earlier loading pathway. 17 out of 17 files showed exact 32-bit divisibility, 17 out of 17 showed the 16-bit word-split signature under the problematic import path, 17 out of 17 matched official checksums, and corrected MNE/header scaling agreement had a maximum error of 2.91 × 10⁻¹¹ µV.</li>
+        <li><strong>Subject identity dominated the candidate condition signal.</strong> In raw PCA space, dog-identity eta-squared was 0.113665 versus candidate-condition eta-squared of 0.001029. After normalization, the measured dog-identity effect in that particular PCA representation decreased to 1.488 × 10⁻⁷.</li>
+        <li><strong>The recordings carried systematic temporal structure.</strong> Session position was associated with feature-space structure (Spearman rho = 0.356328; 95% CI = [0.243731, 0.425494]). The analysis establishes drift-like structure while avoiding unsupported claims about whether the source is biological, behavioral, or acquisition-related.</li>
+        <li><strong>Baseline persistence was too large to ignore.</strong> Pre-to-post trial correlation was rho = 0.715963. After controlling for baseline persistence, the residual association decreased to rho = 0.146097 with R² = 0.011423.</li>
+        <li><strong>Dog-level decoding did not beat the tested null.</strong> Leave-one-dog-out macro AUC was 0.503409, compared with a within-dog permutation-null mean of 0.496272 and a 95th percentile of 0.509545. The observed AUC did not exceed the empirical null threshold.</li>
+        <li><strong>The strongest result is the boundary itself.</strong> The analysis does not establish that canine EEG lacks stimulus-related information. It establishes that the present evidence package is not strong enough to support generalizable condition decoding.</li>
+      </ol>
+    </section>
+
+    <section class="research-section">
+      <h2>Claim Boundary</h2>
+      <p>
+        A strong validation paper must be precise about what it has and has not shown. This study does not conclude that the original experiment was wrong, that canine EEG contains no stimulus-related information, or that every temporal pattern in the recordings has a known biological cause.
+      </p>
+      <p>
+        The claim is narrower and more useful: the available data and metadata are not yet strong enough to support the broad condition-decoding interpretation. The result is a validation-first evidence boundary for this dataset and claim, not a proof that canine EEG classifiers fail as a class. That distinction protects the science and makes the next experiment more targeted.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>Core Contributions</h2>
+      <ul class="research-list">
+        <li>A validation-first canine EEG machine-learning framework spanning raw signal integrity, event integrity, label provenance, signal quality, confounding, generalization, and statistical null testing.</li>
+        <li>An empirical demonstration of why epoch-level EEG classification can be misleading when observations are nested inside a small number of biological subjects.</li>
+        <li>A dog-level decoding evaluation showing that candidate condition decoding does not exceed the tested within-dog permutation null in the current evidence package.</li>
+        <li>A claim-boundary analysis that preserves WARN and FAIL evidence instead of smoothing it into a stronger story than the data can support.</li>
+        <li>A future modeling direction for nuisance-invariant representation learning, where dog identity and session structure are treated as variables to control rather than signals to exploit.</li>
+      </ul>
+    </section>
+
+    <section class="research-section">
+      <h2>Evidence Ladder</h2>
+      <p>
+        The research logic is deliberately sequential. Each stage asks whether the next scientific claim is allowed to stand, and each failure mode becomes an explicit boundary rather than a hidden assumption.
+      </p>
+      <div class="research-table-wrap" role="region" aria-label="Evidence ladder table" tabindex="0">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col">Check</th>
+              <th scope="col">What It Protects Against</th>
+              <th scope="col">Resulting Boundary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Are the raw signals trustworthy?</th><td>CNT decoder and scaling validation</td><td>Numerical output from a distorted import path</td><td>Corrected import is supported; downstream claims still require separate validation</td></tr>
+            <tr><th scope="row">Are events usable?</th><td>Trigger-count and decoder audits</td><td>Pooling recordings with missing, extra, or invalid event markers</td><td>Event integrity is heterogeneous and must condition interpretation</td></tr>
+            <tr><th scope="row">Are labels verified?</th><td>Condition-mapping provenance audit</td><td>Treating candidate trigger labels as experimental truth</td><td>Condition-level neuroscience claims remain blocked until the codebook/logs are recovered</td></tr>
+            <tr><th scope="row">Could the model learn shortcuts?</th><td>Dog identity, session drift, and baseline persistence checks</td><td>Confusing subject/session structure for stimulus-related signal</td><td>Nuisance structure is measurable and must be controlled</td></tr>
+            <tr><th scope="row">Does decoding generalize?</th><td>Leave-one-dog-out evaluation with within-dog nulls</td><td>Overstating epoch-level performance as biological generalization</td><td>Current condition decoding does not exceed the tested null</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="research-section">
+      <h2>1. Motivation</h2>
+      <p>
+        EEG machine learning often appears data-rich because each subject contributes many epochs. Scientifically, however, the effective unit of biological generalization is the subject, not the epoch. In this dataset, the hierarchy is:
+      </p>
+      <p class="research-formula">Dog → Session → Trial → Epoch</p>
+      <p>
+        A dataset containing 2,820 epochs may look large from a machine-learning perspective. Those observations, however, originate from only 16 individual dogs. The epochs are not independent biological subjects; their statistical dependence is structured by the animals from which they originate.
+      </p>
+      <p>
+        This distinction governs cross-validation, statistical testing, confidence intervals, feature selection, model evaluation, and biological interpretation. For claims about generalization to unseen animals, the dog must be the held-out unit.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>2. Central Research Questions</h2>
+      <p>
+        Primary Question: Before interpreting a canine EEG classifier biologically, can we establish that the data, labels, preprocessing, validation strategy, and statistical evidence are sufficiently reliable to support the intended claim?
+      </p>
+      <ul class="research-list">
+        <li>RQ1: Raw Data Integrity: Can raw canine EEG recordings be decoded and scaled correctly before downstream analysis?</li>
+        <li>RQ2: Experimental Integrity: Do the recorded events conform to the expected experimental structure?</li>
+        <li>RQ3: Confounding: Does the learned representation contain stronger information about dog identity, session position, baseline characteristics, or other nuisance variables than about the intended experimental condition?</li>
+        <li>RQ4: Generalization: Does apparent condition decoding generalize to a completely unseen dog?</li>
+        <li>RQ5: Statistical Evidence: Does observed decoding exceed a null distribution generated using a validation-preserving permutation procedure?</li>
+      </ul>
+    </section>
+
+    <section class="research-section">
+      <h2>3. Central Hypothesis</h2>
+      <p>
+        In small-sample canine EEG datasets, apparently meaningful epoch-level classification can be inflated or rendered difficult to interpret when dog identity, temporal structure, signal-quality variation, baseline persistence, or label uncertainty are not explicitly controlled.
+      </p>
+      <p>
+        Conceptually, the observed EEG representation can be viewed as containing contributions from multiple additive sources:
+      </p>
+      <p class="research-formula">X = X_condition + X_dog + X_session + X_baseline + X_artifact + ε</p>
+      <p>Here:</p>
+      <ul class="research-list">
+        <li>X_condition represents information associated with the intended experimental condition.</li>
+        <li>X_dog represents subject-specific information.</li>
+        <li>X_session represents temporal or session-level structure.</li>
+        <li>X_baseline represents persistent pre-stimulus characteristics.</li>
+        <li>X_artifact represents acquisition or recording-related effects.</li>
+        <li>ε represents remaining unaccounted variation.</li>
+      </ul>
+      <p>
+        This is a conceptual decomposition rather than a claim that these components have been perfectly separated statistically. The objective is not merely to maximize prediction, but to establish evidence that predictive information is attributable to the scientific variable of interest rather than identifiable nuisance factors.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>4. Dataset Overview</h2>
+      <p>
+        The current case study uses a public canine EEG Neuroscan continuous (.cnt) dataset associated with an auditory word-processing experiment.
+      </p>
+
+      <div class="research-table-wrap" role="region" aria-label="Dataset overview table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr><th scope="col">Property</th><th scope="col">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Raw CNT recordings</th><td>17</td></tr>
+            <tr><th scope="row">Downstream dogs</th><td>16</td></tr>
+            <tr><th scope="row">Downstream epochs</th><td>2,820</td></tr>
+            <tr><th scope="row">Sampling rate</th><td>1,000 Hz</td></tr>
+            <tr><th scope="row">Channels</th><td>8</td></tr>
+            <tr><th scope="row">Trigger codes</th><td>1-48</td></tr>
+            <tr><th scope="row">Repetitions per trigger code</th><td>5</td></tr>
+            <tr><th scope="row">Expected events per complete recording</th><td>240</td></tr>
+            <tr><th scope="row">Excluded dog</th><td>Dog 40</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Dog 40 was excluded from the downstream cohort because of documented quality-control and event-integrity concerns.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>5. Validation Architecture</h2>
+      <p>
+        The workflow is structured as a claim-control system: upstream validation determines which downstream interpretations are allowed.
+      </p>
+      <p class="research-formula">Raw CNT recordings → Raw decoder validation → Event integrity → Condition / label provenance → Signal quality control → Feature construction → Confound analysis → Dog-level cross-validation → Permutation null → Sensitivity analysis → Claim assessment</p>
+      <p>
+        Core principle: a model result cannot rescue an invalid upstream assumption.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>6. Experiment 1: Raw CNT Decoding Validation</h2>
+      <ul class="research-list">
+        <li>Objective: Examine whether raw EEG samples were being interpreted correctly by the loading pipeline.</li>
+        <li>Problem Identified: An earlier loading pathway interpreted 32-bit CNT samples as split 16-bit words, producing severely distorted traces. The validation procedure examined sample-width structure, divisibility, raw-file integrity, checksums, header information, MNE interpretation, and scaling consistency.</li>
+        <li>Results:
+          <ul class="research-list">
+            <li>17/17 files showed exact 32-bit divisibility.</li>
+            <li>17/17 files showed the 16-bit word-split signature under the problematic import path.</li>
+            <li>17/17 files matched official checksums.</li>
+            <li>Corrected MNE/header scaling agreement had a maximum error of 2.91 × 10⁻¹¹ µV.</li>
+          </ul>
+        </li>
+        <li>Interpretation: Raw EEG interpretation requires explicit validation. An incorrect decoder can propagate through every downstream stage while still producing numerical output that appears plausible.</li>
+      </ul>
+    </section>
+
+    <section class="research-section">
+      <h2>7. Experiment 2: Event and Decoder Validation</h2>
+      <p>
+        The second experiment examined whether recorded event markers conform to the expected experimental structure (48 trigger codes × 5 repetitions = 240 expected stimulus events per complete recording).
+      </p>
+      <div class="research-table-wrap" role="region" aria-label="Event and decoder validation table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr>
+              <th scope="col">Validation Layer</th>
+              <th scope="col">PASS</th>
+              <th scope="col">WARN</th>
+              <th scope="col">FAIL</th>
+              <th scope="col">Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Raw Data Validation</th><td>131</td><td>10</td><td>0</td><td>WARN</td></tr>
+            <tr><th scope="row">Decoder Validation</th><td>108</td><td>36</td><td>10</td><td>FAIL</td></tr>
+            <tr><th scope="row">Event Validation</th><td>9</td><td>9</td><td>0</td><td>WARN</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Nine recordings matched the exact 240-event design and expected stimulus-onset timing. Eight recordings require event-level review. Decoder/QC reports also identified an invalid or unknown trigger code (0) in dogs 34, 40, and 52. Event integrity is heterogeneous and must be evaluated before pooling recordings.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>8. Experiment 3: Condition Mapping and Label Provenance</h2>
+      <p>
+        Event-code integrity and condition-label validity are treated as separate questions:
+      </p>
+      <ul class="research-list">
+        <li>Event-code integrity asks: Was trigger 17 actually recorded?</li>
+        <li>Label provenance asks: Can we establish what trigger 17 represents scientifically?</li>
+      </ul>
+      <p>
+        The repository contains 48 WAV files and recorded trigger codes, but the original codebook and presentation logs required to independently verify the complete condition mapping were not recovered. The mapping is therefore classified as unverified_candidate.
+      </p>
+      <p>
+        Condition-level neuroscience claims are treated as blocked by the provenance audit until the mapping can be independently re-established.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>9. Experiment 4: Signal Quality Control</h2>
+      <p>
+        The QC layer evaluates recording and epoch quality without assuming that thresholds developed for human EEG are universally appropriate for canine EEG.
+      </p>
+      <div class="research-table-wrap" role="region" aria-label="Signal quality control table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr>
+              <th scope="col">QC Approach</th>
+              <th scope="col">Result</th>
+              <th scope="col">Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Historical human-style QC</th><td>17/17 recordings classified as failed</td><td>FAIL</td></tr>
+            <tr><th scope="row">Structured QC validation</th><td>61 PASS / 4 WARN / 3 FAIL</td><td>FAIL</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Dog 40 was excluded because of bad-channel fraction = 1.0, invalid or missing events (237 events rather than 240 expected), and the maximum EEG/EOG standard deviation across all recordings. The appropriate interpretation is not that every remaining recording is unusable. Rather, the analysis demonstrates substantial quality heterogeneity that must be incorporated into downstream interpretation.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>10. Experiment 5: Feature-Space Confounding</h2>
+      <p>
+        This experiment evaluates what information the feature representation actually contains.
+      </p>
+      <div class="research-table-wrap" role="region" aria-label="Feature-space confounding table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr><th scope="col">Effect</th><th scope="col">η²</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Dog identity</th><td>0.113665</td></tr>
+            <tr><th scope="row">Candidate condition</th><td>0.001029</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The raw feature space therefore exhibited substantially stronger dog-identity structure than candidate condition structure.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>11. Experiment 6: Session Position Drift</h2>
+      <p>
+        The analysis examined whether feature representations systematically change with trial or session position.
+      </p>
+      <ul class="research-list">
+        <li>Pooled Spearman rho: 0.356328 (95% CI = [0.243731, 0.425494])</li>
+        <li>Distance-to-reference associations were negative across all 16 dogs.</li>
+      </ul>
+      <p>
+        This establishes systematic temporal structure in the feature representation. Possible explanations include fatigue, arousal, habituation, learning, electrode changes, movement, or environmental shifts.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>12. Experiment 7: Baseline Persistence</h2>
+      <p>
+        The analysis examined whether pre-stimulus baseline characteristics persist into post-stimulus features.
+      </p>
+      <div class="research-table-wrap" role="region" aria-label="Baseline persistence table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr><th scope="col">Measure</th><th scope="col">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Pre-to-post trial correlation</th><td>ρ = 0.715963</td></tr>
+            <tr><th scope="row">Residual correlation after baseline control</th><td>ρ = 0.146097</td></tr>
+            <tr><th scope="row">Residual R²</th><td>0.011423</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The substantial reduction indicates that baseline persistence explains a large component of observed trial-to-trial similarity.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>13. Experiment 8: Dog-Level Decoding &amp; Permutation Null</h2>
+      <p>
+        To test biological generalization to an unseen animal, evaluation used Leave-One-Dog-Out Cross-Validation (LODO-CV): 15 dogs train the model while 1 dog serves as the completely held-out test set.
+      </p>
+      <h3>Primary Baseline Results (Logistic Regression, 16 Dogs, 2,820 Epochs, 88 Features)</h3>
+      <ul class="research-list">
+        <li>Macro AUC: 0.503409</li>
+        <li>Dog-Bootstrap 95% CI: [0.492489, 0.514605]</li>
+        <li>Accuracy: 33.54%</li>
+      </ul>
+      <h3>Within-Dog Permutation Null (20 Within-Dog Shuffles)</h3>
+      <ul class="research-list">
+        <li>Observed AUC: 0.503409</li>
+        <li>Null Mean AUC: 0.496272</li>
+        <li>Null 95th Percentile: 0.509545</li>
+        <li>Held-out dog folds exceeding null p95: 0.0%</li>
+      </ul>
+      <p>
+        Under the current validation and permutation design, observed condition decoding does not exceed the empirical null threshold. This is an evidence-boundary result for the current dataset and claim, not a general proof that canine EEG classifiers cannot work.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>14. Sensitivity Analysis</h2>
+      <div class="research-table-wrap" role="region" aria-label="Sensitivity analysis table" tabindex="0">
+        <table class="research-table research-table--compact">
+          <thead>
+            <tr>
+              <th scope="col">Cohort</th>
+              <th scope="col">Dogs</th>
+              <th scope="col">Epochs</th>
+              <th scope="col">Null p95</th>
+              <th scope="col">Exceeds null?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Current downstream</th><td>16</td><td>2,820</td><td>0.503373</td><td>No</td></tr>
+            <tr><th scope="row">Event-valid</th><td>9</td><td>1,601</td><td>0.479995</td><td>0.521845</td><td>No</td></tr>
+            <tr><th scope="row">Strict validation</th><td>14</td><td>2,441</td><td>0.497624</td><td>0.512827</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Six additional lightweight model baselines produced macro AUC values between 0.501239 and 0.516341. None exceeded their corresponding within-dog null p95.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>15. Main Scientific Insight</h2>
+      <p>
+        In small canine EEG datasets, a predictive model is not sufficient evidence that the model has learned the intended biological phenomenon. The safe headline is evidence-boundary rather than performance-first: the present decoding claim requires stronger validation before it can carry biological interpretation.
+      </p>
+      <p class="research-callout">Prediction ≠ biological interpretation.</p>
+      <p>
+        A model may exploit dog identity, session position, baseline persistence, signal-quality differences, recording artifacts, or uncertain labels while appearing to learn the target neural state.
+      </p>
+    </section>
+
+    <section class="research-section research-note">
+      <h2>Research Judgment</h2>
+      <p>
+        A performance-first analysis could stop at the classifier and frame the result around a metric. This analysis makes the harder research choice: it defines the biological unit of inference, holds out dogs rather than epochs, audits the raw file decoder, separates event integrity from label validity, quantifies nuisance structure, and compares decoding against a validation-preserving null.
+      </p>
+      <p>
+        That posture matters because high-stakes ML systems fail most dangerously when the metric is easier to trust than the evidence. The bounded result is useful because it identifies exactly what must be repaired before stronger neuroscience claims can be made.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>Why This Matters</h2>
+      <p>
+        The important signal here is not metric-chasing. It is that the analysis was designed to be difficult to fool. The work identifies a low-level decoder risk, rejects epoch-level independence as the default unit of inference, exposes dog identity as a stronger structure than candidate condition, preserves label uncertainty instead of hiding it, and lets the null result stand.
+      </p>
+      <p>
+        This is the difference between a model demo and a scientific foundation. A research lead can build the model, audit the assumptions beneath it, and decide when the result is strong enough to support a claim. That judgment is what survives technical diligence, peer review, and real-world deployment.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>16. Proposed Research Direction: Nuisance-Invariant Representations</h2>
+      <p>
+        Future work should formulate canine EEG machine learning as a nuisance-invariant representation learning problem.
+      </p>
+      <p>
+        Given an input EEG signal X, experimental condition Y, dog identity S, and session T, the goal is to learn a representation Z = f(X) that preserves information relevant to the experimental condition while reducing information associated with nuisance variables such as dog identity and session.
+      </p>
+      <div class="research-formula-block" aria-label="Nuisance-invariant mutual information objective">
+        <p>maximize&nbsp; I(Z; Y)</p>
+        <p>while minimizing&nbsp; I(Z; S) &nbsp;and&nbsp; I(Z; T)</p>
+      </div>
+      <p>
+        Here, I(Z; Y) represents the mutual information between the learned representation and the experimental condition, while I(Z; S) and I(Z; T) represent the information the representation retains about dog identity and session, respectively.
+      </p>
+      <p>
+        A corresponding training objective could be formulated as
+      </p>
+      <p class="research-formula">L = L_condition + λ_S L_dog + λ_T L_session</p>
+      <p>
+        Here, L_condition encourages the representation to preserve information useful for predicting the experimental condition, while L_dog and L_session penalize the model for retaining information that makes dog identity or session readily predictable. The coefficients λ_S and λ_T control the strength of these nuisance-invariance constraints.
+      </p>
+      <p>
+        The main goal is not to optimize classification accuracy. The goal is to test whether a representation can preserve condition-relevant structure while reducing reliance on dog-specific or session-specific information.
+      </p>
+      <p>
+        If a future representation improves decoding while reducing information about dog identity and session, that would be stronger evidence that the model is learning structure that generalizes across dogs rather than shortcuts tied to individual animals or recordings.
+      </p>
+      <p>
+        This remains future work, not a solved result. Progress requires verified labels, stronger metadata, larger dog-level cohorts, tests on unseen dogs, and ideally a second independent canine EEG dataset.
+      </p>
+    </section>
+
+    <section class="research-section">
+      <h2>17. Limitations</h2>
+      <ol class="research-list research-list--numbered">
+        <li>Small Cohort Size: The primary cohort contains only 16 dogs, limiting statistical power.</li>
+        <li>Unverified Label Provenance: Original stimulus codebooks were unrecovered.</li>
+        <li>Exploratory Permutation Count: The 20-shuffle permutation count serves as an exploratory diagnostic; larger counts will be required for fine tail estimation in a final publication manuscript.</li>
+        <li>Single Dataset Scope: Generalization to other canine EEG protocols remains to be evaluated.</li>
+        <li>Bounded Result Interpretation: Failure to exceed the null does not establish the absence of biological signal, only that current evidence does not support cross-dog condition decoding.</li>
+      </ol>
+    </section>
+
+    <section class="research-section">
+      <h2>18. Conclusion</h2>
+      <p>
+        This study reframes the problem: before improving canine EEG prediction, the first task is to determine whether the prediction is scientifically meaningful.
+      </p>
+      <p>
+        The current evidence shows event heterogeneity, incomplete condition provenance, strong baseline effects, substantial dog-level structure, and no support for candidate condition decoding above the tested within-dog null when the model is evaluated on unseen dogs. That is not a failed project; it is a properly bounded scientific result.
+      </p>
+      <p>
+        The next step is to repair the evidence chain: recover or reconstruct stimulus-code provenance, obtain stronger dog-level validation data, repeat the analysis on unseen dogs and preferably an independent canine EEG dataset, and then test nuisance-invariant representations. For now, the result should be read as a validation-first evidence-boundary result, not as a proof that canine EEG classifiers fail.
+      </p>
+    </section>
+  </article>
+</main>
+
+<footer class="research-footer">
+  <p>© <span id="footer-year"></span> Bhoomika Hegde</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

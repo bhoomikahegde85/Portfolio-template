@@ -31,5 +31,11 @@
       "destination": "https://bhoomikahegde.com/$1",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/research",
+      "destination": "/research.html"
+    }
   ]
 }
