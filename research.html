@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Canine EEG Validation Framework - Research</title>
-  <meta name="description" content="A validation-first canine EEG research case study on CNT decoding, event integrity, QC provenance, confounds, dog-level inference, and reproducible scientific claims.">
+  <title>Canine EEG Validation Framework</title>
+  <meta name="description" content="A careful canine EEG decoding check covering CNT import, events, labels, QC, subject leakage, dog level testing, and reproducible results.">
   <link rel="canonical" href="https://bhoomikahegde.com/research">
 
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://bhoomikahegde.com/research">
   <meta property="og:title" content="Canine EEG Validation Framework">
-  <meta property="og:description" content="A professional research note on making canine EEG machine-learning claims reproducible, auditable, and scientifically bounded.">
+  <meta property="og:description" content="A canine EEG decoding note about imports, labels, leakage checks, nulls, and what the current AUC can support.">
   <meta property="og:image" content="https://bhoomikahegde.com/assets/profile.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://bhoomikahegde.com/research">
   <meta name="twitter:title" content="Canine EEG Validation Framework">
-  <meta name="twitter:description" content="A validation-first canine EEG research note about reproducible methodology, confounds, and dog-level inference.">
+  <meta name="twitter:description" content="A canine EEG decoding note about imports, labels, leakage checks, nulls, and dog level inference.">
   <meta name="twitter:image" content="https://bhoomikahegde.com/assets/profile.jpg">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -174,6 +174,20 @@
       color: #2c333b;
     }
 
+    .tldr {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--green);
+      padding: 18px 20px;
+      margin: 28px 0;
+    }
+
+    .tldr p {
+      font: 15px/1.55 ui-sans-serif, system-ui, sans-serif;
+      color: #313840;
+      margin: 0;
+    }
+
     .cols {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -321,19 +335,27 @@
 
   <header>
     <div class="eyebrow">Research case study</div>
-    <h1>A validation-first pipeline for canine EEG.</h1>
+    <h1>Canine EEG validation before decoding.</h1>
     <p class="dek">
-      A classifier can produce a number before the science is ready. This project builds the checks
-      that decide what a canine EEG result can responsibly claim.
+      This project checks whether a canine EEG model is learning condition structure, or just picking
+      up file import errors, label uncertainty, recording artifacts, and dog identity.
     </p>
   </header>
 
   <p class="lead">
-    The framework audits raw Neuroscan CNT recordings, event integrity, condition-label provenance,
-    canine-specific quality control, confounds, dog-level decoding, empirical nulls, and reproducibility
-    metadata. The goal is not to maximize classification accuracy. The goal is to make every scientific
-    claim traceable to the evidence that supports it.
+    The classifier is used as a validation probe, not as the main result. If a score depends on dogs
+    leaking across splits, uncertain labels, or a raw import bug, it should not become a neuroscience claim.
+    In the current run, leave-one-dog-out decoding gives macro AUC around 0.503. Since 0.5 is chance
+    level for AUC, this says the model is not separating the candidate conditions beyond the null.
   </p>
+
+  <div class="tldr">
+    <p>
+      <strong>TL;DR:</strong> The analysis found a CNT import issue, kept trigger checks separate from
+      label validity, ran dog level decoding, and treated the near null AUC as a limit on what the data
+      can support rather than a reason to tune a bigger model.
+    </p>
+  </div>
 
   <div class="figure">
     <svg viewBox="0 0 980 300" role="img" aria-label="Canine EEG validation pipeline">
@@ -352,193 +374,151 @@
       <text x="319" y="102" text-anchor="middle" font-size="16" font-weight="700">Events</text>
       <text x="319" y="127" text-anchor="middle" font-size="13">counts, timing, runs</text>
       <text x="542" y="102" text-anchor="middle" font-size="16" font-weight="700">Labels + QC</text>
-      <text x="542" y="127" text-anchor="middle" font-size="13">provenance, cohort</text>
+      <text x="542" y="127" text-anchor="middle" font-size="13">source, dogs</text>
       <text x="744" y="102" text-anchor="middle" font-size="16" font-weight="700">Confounds</text>
       <text x="744" y="127" text-anchor="middle" font-size="13">dog, session</text>
-      <text x="897" y="102" text-anchor="middle" font-size="16" font-weight="700">Claims</text>
-      <text x="897" y="127" text-anchor="middle" font-size="13">bounded evidence</text>
+      <text x="897" y="102" text-anchor="middle" font-size="16" font-weight="700">Claim</text>
+      <text x="897" y="127" text-anchor="middle" font-size="13">only if supported</text>
       <line x1="180" y1="113" x2="228" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
       <line x1="402" y1="113" x2="450" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
       <line x1="626" y1="113" x2="674" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
       <line x1="806" y1="113" x2="834" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
       <text x="490" y="222" text-anchor="middle" font-size="13" fill="#5b6470">
-        The pipeline treats validation outputs as scientific evidence, not as background logs.
+        Decoding is evaluated after import, event, label, QC, split, and null checks.
       </text>
     </svg>
     <div class="caption">
-      Fig. 1 Validation path. Raw signal integrity, event structure, label provenance, QC, confounds,
-      and statistics are checked before interpretation.
+      Fig. 1 Validation path
     </div>
   </div>
 
-  <h2>1. Why this problem matters</h2>
+  <h2>1. The small N problem</h2>
   <p>
-    EEG machine learning can look larger than it is. A study may contain thousands of epochs, but
-    those epochs can come from a small number of biological subjects. In this case, the downstream
-    analyses use 2,820 epochs from 16 dogs. The dog is the biological unit; the epochs are repeated
-    observations nested inside each dog.
+    The downstream analysis has 2,820 epochs from 16 dogs. Those epochs are treated as repeated
+    measurements, not as 2,820 independent samples.
   </p>
   <p>
-    That distinction changes the whole analysis. A model that sees epochs from the same dog during
-    training and testing may learn dog identity, recording context, session order, baseline amplitude,
-    or preprocessing artifacts. The scientific question is therefore not simply whether a classifier
-    can predict a label. The question is whether the prediction survives the validation checks needed
-    for a biological claim.
+    That is why the split matters. With mixed dog splits, decoding can pick up dog identity, session
+    structure, baseline differences, or preprocessing artifacts. Leave-one-dog-out evaluation keeps the
+    test dog unseen during training.
   </p>
 
   <div class="cols">
     <div class="card">
-      <h3>Research unit</h3>
-      <p>The dog is the independent biological unit. Epochs are useful observations, not independent animals.</p>
+      <h3>Unit</h3>
+      <p>The dog is the independent subject. Epochs improve measurement density, not sample size.</p>
     </div>
     <div class="card">
-      <h3>Model role</h3>
-      <p>Decoding is treated as a validation endpoint, not as an accuracy competition or deep-learning contribution.</p>
+      <h3>Split</h3>
+      <p>Leave-one-dog-out evaluation keeps the test dog unseen during training.</p>
     </div>
     <div class="card">
-      <h3>Claim style</h3>
-      <p>Every result is tied to what it supports, what it constrains, and what remains unresolved.</p>
+      <h3>Readout</h3>
+      <p>AUC is compared with a dog preserving shuffled label reference.</p>
     </div>
   </div>
 
-  <h2>2. The scientific claims</h2>
+  <h2>2. Validation checks before decoding</h2>
   <p>
-    The project makes methodological claims. These claims are positive, but deliberately specific:
-    they describe what the framework can verify, expose, or constrain in the current canine EEG
-    evidence package.
+    Before modeling, the dataset itself becomes the object of validation. The question is not
+    which classifier performs best, but whether the inputs can support a decoding claim at all.
   </p>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 1</span>
-    <h3>Raw CNT decoding can be audited and corrected.</h3>
+    <span class="mini-label">Raw data</span>
+    <h3>Read the CNT files correctly.</h3>
     <p>
-      The low-level decoding audit identified a concrete import-width failure: 32-bit CNT samples had
-      previously been interpreted as split 16-bit words. The corrected audit supports 32-bit decoding
-      across 17 raw recordings, with official checksum agreement and maximum MNE/header scaling error
-      of 2.91e-11 uV.
+      The first failure was file reading. A previous import path treated 32-bit CNT samples as split
+      16-bit words. After fixing that, all 17 recordings pass the 32-bit import check,
+      with checksum agreement and maximum MNE/header scaling error of 2.91e-11 uV.
     </p>
   </div>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 2</span>
-    <h3>Event-code integrity and condition-label validity are different questions.</h3>
+    <span class="mini-label">Labels</span>
+    <h3>Separate trigger quality from condition meaning.</h3>
     <p>
-      Numeric trigger codes can be counted, ordered, and checked against expected repetitions without
-      assuming that every code-to-condition mapping is experimentally verified. This separation prevents
-      candidate labels from being promoted into condition-level neuroscience claims.
+      Trigger codes can have the right counts and order even when the stimulus mapping is incomplete.
+      These two questions are kept separate: whether the event stream is internally consistent, and
+      whether a code can be trusted as a condition label.
     </p>
   </div>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 3</span>
-    <h3>Canine EEG quality control needs provenance.</h3>
+    <span class="mini-label">QC</span>
+    <h3>Keep threshold choices visible.</h3>
     <p>
-      The QC layer records recording-level and epoch-level metrics while preserving whether thresholds
-      are exploratory or externally justified. This matters because human-style EEG thresholds can behave
-      poorly on canine recordings; the framework turns that risk into visible evidence.
+      Recording and epoch metrics are stored together with the threshold status. Some thresholds are
+      exploratory, and they should be marked that way. Human EEG QC rules are a reference point, not an
+      automatic fit for canine recordings.
     </p>
   </div>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 4</span>
-    <h3>Dog identity, session position, and baseline persistence are measurable confounds.</h3>
+    <span class="mini-label">Confounds</span>
+    <h3>Look for dog and session structure before interpreting labels.</h3>
     <p>
-      The framework reports dog-identity structure in raw embeddings, session-position associations, and
-      baseline-to-response persistence. These findings do not assign a biological cause. They show which
-      structure must be considered before interpreting condition decoding.
+      The analysis checks whether embeddings carry dog identity, whether session position tracks labels,
+      and whether baseline activity persists into the response window. If that structure is present, decoding can
+      reflect the recording setup before it reflects the condition.
     </p>
   </div>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 5</span>
-    <h3>Leave-one-dog-out decoding remains close to a dog-preserving null.</h3>
+    <span class="mini-label">Decoding</span>
+    <h3>Use dog level splits and a dog preserving null.</h3>
     <p>
-      Under candidate condition labels, leave-one-dog-out macro AUC is approximately 0.503 and does not
-      exceed the within-dog shuffled-label null reference. This is a useful result: it protects the paper
-      from overstating condition decoding while preserving a clear validation baseline for future work.
+      With candidate condition labels, leave-one-dog-out macro AUC is about 0.503 and does not exceed
+      the within dog shuffled label null. Since 0.5 is chance level for AUC, this result says the
+      current labels and features do not support a condition decoding claim.
     </p>
   </div>
 
   <div class="wide-card">
-    <span class="mini-label">Claim 6</span>
-    <h3>Reproducibility is part of the evidence.</h3>
+    <span class="mini-label">Reproducibility</span>
+    <h3>Record enough to rerun the analysis.</h3>
     <p>
-      The validation run records raw checksums, configuration hash, software versions, random seed, exact
-      command, and generated report checksums. The result is not just a narrative summary; it is an
-      auditable evidence package.
+      Each run stores raw checksums, the config hash, software versions, random seed, exact command,
+      and report checksums. That makes the result traceable to the files and settings that produced it.
     </p>
   </div>
 
-  <h2>3. Dataset and provenance</h2>
+  <h2>3. Dataset</h2>
   <p>
-    The case study uses a public canine EEG dataset associated with auditory word processing. The raw
-    data are represented as 17 numeric Neuroscan CNT recordings, each expected to contain eight channels
-    sampled at 1000 Hz. The expected event design contains trigger codes 1-48, five repetitions per code,
-    and 240 stimulus events per complete recording.
+    The case study uses the public canine EEG data from Magyari et al. (2020), an auditory word
+    processing experiment in dogs. The raw data include 17 numeric Neuroscan CNT recordings. Each
+    recording is expected to contain eight channels sampled at 1000 Hz. A complete recording has trigger
+    codes 1-48, five repeats per code, and 240 stimulus events.
   </p>
   <p>
-    The downstream analysis cohort contains 16 dogs and 2,820 epochs. Dog 40 is documented as excluded
-    from downstream analyses because of quality-control and event-integrity concerns. The public
-    dataset archive is linked below for provenance and reproducibility.
+    The downstream set has 16 dogs and 2,820 epochs. Dog 40 is excluded because of QC and event
+    integrity concerns. The archive is linked so the data source is explicit.
   </p>
 
   <div class="dataset-box">
-    <span class="mini-label">Dataset link</span>
-    <p>Public Figshare archive for the canine EEG recordings used by the case study.</p>
+    <span class="mini-label">Dataset and source paper</span>
+    <p>Public Figshare archive for the recordings used in Magyari, Huszar, Turzo, and Andics (2020).</p>
     <a href="https://figshare.com/articles/dataset/EEG_data_of_experiment_in_paper_manuscript_titled_Event-related_potentials_reveal_limited_readiness_to_access_phonetic_details_during_word_processing_in_dogs_Authors_Magyari_L_Husz_r_Zs_Turz_A_Andics_A/9807758/1" aria-label="Open canine EEG dataset on Figshare">Open Figshare dataset</a>
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33489257/" aria-label="Open Magyari et al. 2020 source paper">Open source paper</a>
   </div>
 
-  <h2>4. Methodology</h2>
+  <h2>4. Method</h2>
   <p>
-    The method is organized as a validation chain. Each stage receives explicit inputs, performs a
-    defined audit, writes machine-readable and human-readable outputs, and constrains the claims that
-    can follow.
+    The analysis starts with the data, not the classifier. I verify the CNT import, event stream,
+    candidate label mapping, QC choices, and subject structure first, because each of those can change
+    what a decoding score means.
   </p>
-
-  <div class="figure">
-    <svg viewBox="0 0 980 330" role="img" aria-label="Methodology modules">
-      <defs>
-        <marker id="arrowMethod" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-          <path d="M0,0 L8,4 L0,8 Z" fill="#6d747d"></path>
-        </marker>
-      </defs>
-      <rect x="44" y="54" width="186" height="82" fill="#e9f0fb" stroke="#315d9f"></rect>
-      <rect x="286" y="54" width="186" height="82" fill="#edf6ef" stroke="#3f7d5a"></rect>
-      <rect x="528" y="54" width="186" height="82" fill="#fff3de" stroke="#a46b22"></rect>
-      <rect x="770" y="54" width="166" height="82" fill="#f7e8e6" stroke="#9d3d38"></rect>
-      <text x="137" y="84" text-anchor="middle" font-size="15" font-weight="700">decode</text>
-      <text x="137" y="108" text-anchor="middle" font-size="12">CNT, channels, events</text>
-      <text x="379" y="84" text-anchor="middle" font-size="15" font-weight="700">validate</text>
-      <text x="379" y="108" text-anchor="middle" font-size="12">QC, labels, confounds</text>
-      <text x="621" y="84" text-anchor="middle" font-size="15" font-weight="700">evaluate</text>
-      <text x="621" y="108" text-anchor="middle" font-size="12">LOGO + permutation null</text>
-      <text x="853" y="84" text-anchor="middle" font-size="15" font-weight="700">audit claims</text>
-      <text x="853" y="108" text-anchor="middle" font-size="12">support + boundary</text>
-      <line x1="230" y1="95" x2="278" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
-      <line x1="472" y1="95" x2="520" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
-      <line x1="714" y1="95" x2="762" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
-      <text x="490" y="212" text-anchor="middle" font-size="13" fill="#5b6470">
-        Every stage asks what the next stage is allowed to claim.
-      </text>
-    </svg>
-    <div class="caption">
-      Fig. 2 Methodological structure. The framework converts validation checks into claim permissions.
-    </div>
-  </div>
-
-  <ul>
-    <li><strong>Raw import:</strong> Decode CNT files as signed little-endian 32-bit samples and verify scaling.</li>
-    <li><strong>Event audit:</strong> Check trigger range, repetitions, missing or extra events, ordering, and run constraints.</li>
-    <li><strong>QC provenance:</strong> Compute recording and epoch metrics while keeping threshold status explicit.</li>
-    <li><strong>Confound analysis:</strong> Measure dog identity, session position, and baseline-persistence structure.</li>
-    <li><strong>Statistics:</strong> Use leave-one-dog-out evaluation, within-dog permutation nulls, and dog-level bootstrap summaries.</li>
-  </ul>
+  <p>
+    Decoding is then run with leave-one-dog-out splits. The held out dog is never seen during training,
+    and macro AUC is compared with a within dog shuffled label null. This keeps the evaluation focused
+    on subject independent signal instead of repeated epochs from the same dog.
+  </p>
 
   <h2>5. Results</h2>
   <p>
-    The main result is a validated evidence boundary. The corrected CNT import path is supported.
-    Recording-level event deviations are visible. QC provenance is explicit. Confounds are measured.
-    Dog-level decoding is near null under the current candidate labels.
+    The main result is a cleaner evidence base for canine EEG decoding. The raw CNT path is corrected,
+    event issues are visible instead of hidden, QC choices are explicit, confounds are measured, and
+    dog level decoding has a clear null reference.
   </p>
 
   <div class="table-wrap" role="region" aria-label="Summary of results" tabindex="0">
@@ -554,63 +534,68 @@
         <tr>
           <th scope="row">CNT decoding</th>
           <td>17/17 files show corrected 32-bit consistency and checksum agreement.</td>
-          <td>The raw signal path is reproducible and auditable.</td>
+          <td>The raw signal path is now traceable and checkable.</td>
         </tr>
         <tr>
           <th scope="row">Event integrity</th>
           <td>9 recordings match the exact event design; 8 require event review.</td>
-          <td>Event quality is recording-specific and should not be hidden by pooling.</td>
+          <td>Recording level event issues are visible before any pooled analysis.</td>
         </tr>
         <tr>
           <th scope="row">Condition mapping</th>
-          <td>The original trigger-code-to-stimulus codebook was not recovered locally.</td>
-          <td>Condition labels remain candidate labels for validation analyses.</td>
+          <td>The original trigger code to stimulus codebook was not recovered locally.</td>
+          <td>The analysis keeps candidate labels useful without overstating them as verified conditions.</td>
         </tr>
         <tr>
-          <th scope="row">Dog-level decoding</th>
-          <td>Macro AUC is about 0.503 and remains below the within-dog null reference.</td>
-          <td>The current evidence supports a careful null decoding result, not a broad cognition claim.</td>
+          <th scope="row">Dog level decoding</th>
+          <td>Macro AUC is about 0.503, close to the 0.5 chance level, and remains below the within dog null reference.</td>
+          <td>The result gives a calibrated baseline for future labels, features, and larger dog cohorts.</td>
         </tr>
         <tr>
           <th scope="row">Reproducibility</th>
           <td>Checksums, config hash, software versions, command, seed, and report outputs are recorded.</td>
-          <td>The analysis is packaged as an auditable research object.</td>
+          <td>The run can be inspected, rerun, and compared with future analyses.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="note">
-    The important point is not that the classifier is weak. The important point is that the framework
-    can tell when a classifier result should remain a validation result rather than becoming a biological claim.
+    A low AUC is not the main result. The result is knowing when a model output is only a validation
+    result, not a biological finding.
   </div>
 
-  <h2>6. How to read the null decoding result</h2>
+  <h2>6. Limitations and open questions</h2>
   <p>
-    A near-null decoding result is not the same as proving there is no neural information. It means that
-    under the current candidate labels, current feature set, fixed lightweight models, and leave-one-dog-out
-    evaluation, condition decoding does not exceed a dog-preserving shuffled-label reference.
+    The near null result should be read narrowly. It does not say that the EEG has no information. It
+    says this label set, feature set, and leave-one-dog-out setup did not separate the candidate
+    conditions beyond the dog preserving null.
   </p>
   <p>
-    That is still scientifically useful. It prevents a model score from being stretched into semantic decoding,
-    canine cognition, clinical interpretation, or population-level generalization. It also gives the next study
-    a concrete checklist: verified condition mapping, stronger dog-level cohorts, transparent QC, and the same
-    subject-independent evaluation discipline.
+    The biggest open issue is still the condition mapping. The original trigger code to stimulus
+    codebook was not recovered locally, so the labels stay candidate labels. The other limitation is
+    sample size at dog level. More dogs and verified labels could change the result; they just need to
+    be tested with the same dog held out discipline.
   </p>
 
-  <h2>7. What makes the framework reusable</h2>
+  <h2>7. Conclusion</h2>
   <p>
-    The reusable part is the validation structure. New datasets can provide their own dataset specification,
-    event design, stimulus mapping, adapter, QC provenance, and report outputs. The same logic can then ask:
-    what does this dataset support, what needs a caveat, and what should remain a future claim?
+    The next step is to test the same checks on data with cleaner metadata: verified condition mapping,
+    more dogs if possible, transparent QC, and the same leave-one-dog-out evaluation. A larger classifier
+    only makes sense after that.
   </p>
   <p>
-    That makes the project a neuroinformatics contribution rather than a one-off classifier. It is designed
-    to make small canine EEG studies easier to inspect, reproduce, compare, and improve.
+    The current dataset is enough to build and test the validation pipeline, but not enough for broad
+    claims. Because comparable canine EEG recordings are not easy to find, I have contacted a couple of
+    other authors about related data. A second dataset would make it possible to test whether the same
+    import, label, QC, and subject split issues appear again.
+  </p>
+  <p>
+    The framework is a starting point for that comparison, not the final answer.
   </p>
 
   <footer>
-    Canine EEG Validation Framework &middot; reproducibility-first computational neuroscience
+    Canine EEG Validation Framework &middot; reproducibility first computational neuroscience
   </footer>
 </main>
 </body>
