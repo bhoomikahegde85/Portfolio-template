@@ -1,805 +1,618 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<title>Canine EEG Validation Framework - Research Notes</title>
-<meta name="description" content="A readable research blog on a validation-first canine EEG framework: CNT decoding, event checks, canine-specific QC, confounds, and dog-level model evaluation." />
-<link rel="canonical" href="https://bhoomikahegde.com/research" />
-
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://bhoomikahegde.com/research" />
-<meta property="og:title" content="Canine EEG Validation Framework" />
-<meta property="og:description" content="A simple, technical research note on making canine EEG machine learning more reproducible and harder to overclaim." />
-<meta property="og:image" content="https://bhoomikahegde.com/assets/profile.jpg" />
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content="https://bhoomikahegde.com/research" />
-<meta name="twitter:title" content="Canine EEG Validation Framework" />
-<meta name="twitter:description" content="A validation-first canine EEG research note about reproducibility, confounds, and dog-level inference." />
-<meta name="twitter:image" content="https://bhoomikahegde.com/assets/profile.jpg" />
-
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
-
-<style>
-  :root {
-    --research-page: #f5f1ea;
-    --research-paper: #fffdf8;
-    --research-ink: #1d2421;
-    --research-muted: #626c67;
-    --research-line: #d7d0c4;
-    --research-wash: #ebe2d3;
-    --research-sage: #5d7668;
-    --research-clay: #9c5d46;
-    --research-blue: #314c5d;
-    --research-mono: 'JetBrains Mono', ui-monospace, monospace;
-    --research-body: 'Inter', system-ui, sans-serif;
-    --research-display: 'Fraunces', Georgia, serif;
-  }
-
-  body.research-page {
-    --research-page: #f5f1ea;
-    --research-paper: #fffdf8;
-    --research-ink: #1d2421;
-    --research-muted: #626c67;
-    --research-line: #d7d0c4;
-    --research-wash: #ebe2d3;
-    --research-sage: #5d7668;
-    --research-clay: #9c5d46;
-    --research-blue: #314c5d;
-    margin: 0;
-    background:
-      linear-gradient(180deg, rgba(255, 253, 248, .82), rgba(245, 241, 234, .96)),
-      var(--research-page);
-    color: var(--research-ink);
-    font-family: var(--research-body);
-    line-height: 1.7;
-  }
-
-  body.research-page #cursor-dot,
-  body.research-page #cursor-ring {
-    display: none;
-  }
-
-  .research-page a { color: inherit; }
-  .research-page strong { color: #121715; }
-
-  .research-shell {
-    width: min(100% - 32px, 1060px);
-    margin: 0 auto;
-  }
-
-  .research-topbar {
-    border-top: 3px solid var(--research-ink);
-    background: rgba(245, 241, 234, .82);
-    backdrop-filter: blur(14px);
-  }
-
-  .research-nav {
-    min-height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 0;
-    font: 600 .76rem/1 var(--research-mono);
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: var(--research-muted);
-  }
-
-  .research-nav a { text-decoration: none; }
-  .research-nav a:hover { color: var(--research-ink); }
-
-  .research-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
-    gap: clamp(32px, 6vw, 72px);
-    align-items: end;
-    padding: clamp(48px, 8vw, 96px) 0 clamp(34px, 6vw, 66px);
-    border-bottom: 1px solid var(--research-line);
-  }
-
-  .eyebrow {
-    margin: 0 0 18px;
-    color: var(--research-clay);
-    font: 700 .78rem/1.4 var(--research-mono);
-    letter-spacing: .11em;
-    text-transform: uppercase;
-  }
-
-  .research-hero h1 {
-    margin: 0;
-    max-width: 11ch;
-    font-family: var(--research-display);
-    font-size: clamp(3.1rem, 8vw, 6.65rem);
-    font-weight: 750;
-    letter-spacing: 0;
-    line-height: .95;
-  }
-
-  .dek {
-    max-width: 56ch;
-    margin: 28px 0 0;
-    color: #303833;
-    font-size: clamp(1.08rem, 2vw, 1.32rem);
-    line-height: 1.55;
-  }
-
-  .hero-card {
-    border: 1px solid var(--research-line);
-    background: rgba(255, 253, 248, .92);
-    box-shadow: 0 22px 60px rgba(39, 32, 21, .08);
-    padding: clamp(20px, 3vw, 30px);
-  }
-
-  .hero-card h2,
-  .section-title,
-  .figure-title {
-    margin: 0;
-    font-family: var(--research-display);
-    letter-spacing: 0;
-    line-height: 1.15;
-  }
-
-  .hero-card h2 {
-    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
-  }
-
-  .hero-card p {
-    margin: 14px 0 0;
-    color: var(--research-muted);
-  }
-
-  .meta-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1px;
-    margin-top: 22px;
-    background: var(--research-line);
-    border: 1px solid var(--research-line);
-  }
-
-  .meta-item {
-    background: var(--research-paper);
-    padding: 14px;
-  }
-
-  .meta-item span {
-    display: block;
-    color: var(--research-muted);
-    font: 600 .68rem/1.25 var(--research-mono);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  .meta-item b {
-    display: block;
-    margin-top: 7px;
-    font-size: .98rem;
-    line-height: 1.35;
-  }
-
-  .article {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 260px;
-    gap: clamp(32px, 6vw, 72px);
-    padding: clamp(38px, 7vw, 78px) 0;
-  }
-
-  .content {
-    max-width: 760px;
-  }
-
-  .content section + section {
-    margin-top: clamp(42px, 6vw, 64px);
-  }
-
-  .lead {
-    font-family: var(--research-display);
-    font-size: clamp(1.38rem, 2.7vw, 2.05rem);
-    font-weight: 500;
-    line-height: 1.3;
-    color: #222924;
-  }
-
-  .research-page p {
-    margin: 0;
-    color: #303833;
-    font-size: 1.03rem;
-  }
-
-  .research-page p + p {
-    margin-top: 1rem;
-  }
-
-  .section-title {
-    margin-bottom: 16px;
-    font-size: clamp(1.6rem, 3vw, 2.35rem);
-  }
-
-  .kicker {
-    margin-bottom: 10px;
-    color: var(--research-sage);
-    font: 700 .72rem/1.35 var(--research-mono);
-    letter-spacing: .11em;
-    text-transform: uppercase;
-  }
-
-  .pullquote {
-    margin: 30px 0;
-    padding: 24px 0 24px 26px;
-    border-left: 4px solid var(--research-sage);
-    color: #17201b;
-    font-family: var(--research-display);
-    font-size: clamp(1.32rem, 2.4vw, 1.78rem);
-    font-weight: 650;
-    line-height: 1.28;
-  }
-
-  .figure {
-    margin: 28px 0;
-    border: 1px solid var(--research-line);
-    background: var(--research-paper);
-  }
-
-  .figure-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--research-line);
-  }
-
-  .figure-title {
-    font-size: 1.2rem;
-  }
-
-  .figure-label {
-    color: var(--research-muted);
-    font: 600 .68rem/1 var(--research-mono);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  .pipeline {
-    padding: 18px;
-  }
-
-  .pipeline svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .caption {
-    padding: 0 20px 18px;
-    color: var(--research-muted);
-    font-size: .92rem;
-    line-height: 1.55;
-  }
-
-  .evidence-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin-top: 22px;
-  }
-
-  .evidence-card {
-    border: 1px solid var(--research-line);
-    background: var(--research-paper);
-    padding: 18px;
-  }
-
-  .evidence-card b {
-    display: block;
-    color: var(--research-blue);
-    font: 700 1.35rem/1 var(--research-display);
-  }
-
-  .evidence-card span {
-    display: block;
-    margin-top: 9px;
-    color: var(--research-muted);
-    font-size: .92rem;
-    line-height: 1.45;
-  }
-
-  .table-wrap {
-    margin-top: 22px;
-    overflow-x: auto;
-    border: 1px solid var(--research-line);
-    background: var(--research-paper);
-  }
-
-  table {
-    width: 100%;
-    min-width: 690px;
-    border-collapse: collapse;
-    font-size: .94rem;
-    line-height: 1.45;
-  }
-
-  th,
-  td {
-    padding: 15px 16px;
-    border-bottom: 1px solid var(--research-line);
-    text-align: left;
-    vertical-align: top;
-  }
-
-  thead th {
-    background: var(--research-wash);
-    color: #37403b;
-    font: 700 .7rem/1.35 var(--research-mono);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  tbody tr:last-child th,
-  tbody tr:last-child td {
-    border-bottom: 0;
-  }
-
-  tbody th {
-    width: 26%;
-    color: #161c19;
-    font-weight: 700;
-  }
-
-  .tag {
-    display: inline-block;
-    padding: 3px 8px;
-    border: 1px solid currentColor;
-    border-radius: 999px;
-    font: 700 .67rem/1.25 var(--research-mono);
-    letter-spacing: .07em;
-    text-transform: uppercase;
-  }
-
-  .tag-good { color: #2f6b4f; background: #edf6ef; }
-  .tag-watch { color: #85601d; background: #fbf4df; }
-  .tag-stop { color: #9b3f3f; background: #faeeee; }
-
-  .checks {
-    display: grid;
-    gap: 12px;
-    margin: 22px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .checks li {
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    gap: 12px;
-    align-items: start;
-    color: #303833;
-  }
-
-  .checks li::before {
-    content: "";
-    width: 10px;
-    height: 10px;
-    margin-top: 9px;
-    border-radius: 50%;
-    background: var(--research-sage);
-    box-shadow: 0 0 0 6px rgba(93, 118, 104, .12);
-  }
-
-  .dataset-box {
-    margin-top: 24px;
-    padding: 22px;
-    border: 1px dashed var(--research-clay);
-    background: #fffaf1;
-  }
-
-  .dataset-box a {
-    display: inline-flex;
-    margin-top: 14px;
-    padding: 10px 14px;
-    border: 1px solid var(--research-ink);
-    text-decoration: none;
-    font: 700 .78rem/1 var(--research-mono);
-    letter-spacing: .07em;
-    text-transform: uppercase;
-  }
-
-  .dataset-box a:hover {
-    background: var(--research-ink);
-    color: var(--research-paper);
-  }
-
-  .aside {
-    position: sticky;
-    top: 22px;
-    align-self: start;
-  }
-
-  .aside-card {
-    border-top: 3px solid var(--research-ink);
-    border-bottom: 1px solid var(--research-line);
-    padding: 18px 0;
-  }
-
-  .aside-card + .aside-card {
-    margin-top: 24px;
-  }
-
-  .aside-card h2 {
-    margin: 0 0 12px;
-    font: 700 .74rem/1.3 var(--research-mono);
-    letter-spacing: .1em;
-    text-transform: uppercase;
-  }
-
-  .aside-card p,
-  .aside-card li {
-    color: var(--research-muted);
-    font-size: .91rem;
-    line-height: 1.55;
-  }
-
-  .aside-card ul {
-    margin: 0;
-    padding-left: 18px;
-  }
-
-  .aside-card li + li {
-    margin-top: 8px;
-  }
-
-  .research-footer {
-    border-top: 1px solid var(--research-line);
-    padding: 24px 0 36px;
-    color: var(--research-muted);
-    font: 600 .74rem/1.4 var(--research-mono);
-    letter-spacing: .06em;
-    text-transform: uppercase;
-  }
-
-  @media (max-width: 880px) {
-    .research-hero,
-    .article {
-      grid-template-columns: 1fr;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Canine EEG Validation Framework - Research</title>
+  <meta name="description" content="A validation-first canine EEG research case study on CNT decoding, event integrity, QC provenance, confounds, dog-level inference, and reproducible scientific claims.">
+  <link rel="canonical" href="https://bhoomikahegde.com/research">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://bhoomikahegde.com/research">
+  <meta property="og:title" content="Canine EEG Validation Framework">
+  <meta property="og:description" content="A professional research note on making canine EEG machine-learning claims reproducible, auditable, and scientifically bounded.">
+  <meta property="og:image" content="https://bhoomikahegde.com/assets/profile.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://bhoomikahegde.com/research">
+  <meta name="twitter:title" content="Canine EEG Validation Framework">
+  <meta name="twitter:description" content="A validation-first canine EEG research note about reproducible methodology, confounds, and dog-level inference.">
+  <meta name="twitter:image" content="https://bhoomikahegde.com/assets/profile.jpg">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <style>
+    :root {
+      --ink: #111315;
+      --muted: #5b6470;
+      --line: #d9dee5;
+      --paper: #fbfaf7;
+      --panel: #ffffff;
+      --blue: #315d9f;
+      --green: #3f7d5a;
+      --amber: #a46b22;
+      --red: #9d3d38;
     }
 
-    .research-hero h1 {
-      max-width: 12ch;
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      line-height: 1.62;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .aside {
-      position: static;
+    main {
+      width: min(900px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 54px 0 88px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 30px;
+      margin-bottom: 42px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 46px;
+      font: 600 12px/1.2 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    nav a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    nav a:hover { color: var(--ink); }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 12px;
+      padding: 8px 10px;
+      background: var(--ink);
+      color: var(--paper);
+      z-index: 10;
+    }
+
+    .skip-link:focus { left: 12px; }
+
+    .eyebrow {
+      font: 600 12px/1.2 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 18px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 7vw, 76px);
+      line-height: 0.98;
+      letter-spacing: 0;
+      margin: 0 0 22px;
+      max-width: 820px;
+      font-weight: 700;
+    }
+
+    .dek {
+      font-size: clamp(18px, 2.4vw, 24px);
+      line-height: 1.42;
+      color: #25292e;
+      max-width: 780px;
+      margin: 0;
+    }
+
+    h2 {
+      margin: 56px 0 14px;
+      font-size: 25px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font: 700 16px/1.25 ui-sans-serif, system-ui, sans-serif;
+    }
+
+    p {
+      font-size: 18px;
+      margin: 14px 0;
+    }
+
+    .lead {
+      font-size: 20px;
+      color: #22272d;
+    }
+
+    .figure {
+      margin: 34px 0;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      overflow-x: auto;
+    }
+
+    .caption {
+      font: 13px/1.45 ui-sans-serif, system-ui, sans-serif;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 720px;
+      height: auto;
+      display: block;
+    }
+
+    text {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      fill: var(--ink);
+    }
+
+    .note {
+      border-left: 3px solid var(--blue);
+      padding: 4px 0 4px 18px;
+      margin: 28px 0;
+      color: #2c333b;
+    }
+
+    .cols {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 0;
     }
 
-    .aside-card + .aside-card {
-      margin-top: 0;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .research-shell {
-      width: min(100% - 24px, 1060px);
-    }
-
-    .research-nav {
-      min-height: 56px;
-      font-size: .68rem;
-    }
-
-    .research-hero h1 {
-      font-size: clamp(2.65rem, 15vw, 4rem);
-    }
-
-    .hero-card,
-    .evidence-card,
-    .dataset-box {
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
       padding: 16px;
+      min-height: 148px;
     }
 
-    .meta-grid,
-    .evidence-grid,
-    .aside {
-      grid-template-columns: 1fr;
+    .card h3 {
+      font: 700 15px/1.2 ui-sans-serif, system-ui, sans-serif;
+      margin: 0 0 8px;
     }
 
-    .figure-header {
-      display: block;
+    .card p {
+      font: 14px/1.48 ui-sans-serif, system-ui, sans-serif;
+      color: var(--muted);
+      margin: 0;
     }
 
-    .figure-label {
-      display: block;
+    .wide-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px 20px;
+      margin: 18px 0;
+    }
+
+    .wide-card p,
+    .wide-card li {
+      font: 15px/1.55 ui-sans-serif, system-ui, sans-serif;
+      color: #3f4650;
+    }
+
+    .mini-label {
+      display: inline-block;
+      font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    ul {
+      margin: 14px 0 22px 24px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    li { margin: 6px 0; }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      background: #eef1f4;
+      padding: 0.05em 0.32em;
+    }
+
+    .table-wrap {
+      margin: 24px 0;
+      overflow-x: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font: 14px/1.45 ui-sans-serif, system-ui, sans-serif;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    thead th {
+      background: #eef1f4;
+      color: #343b44;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .dataset-box {
+      background: var(--panel);
+      border: 1px dashed var(--amber);
+      padding: 18px 20px;
+      margin: 22px 0;
+    }
+
+    .dataset-box p {
+      font: 15px/1.55 ui-sans-serif, system-ui, sans-serif;
+      color: #3f4650;
+    }
+
+    .dataset-box a {
+      display: inline-block;
       margin-top: 8px;
+      font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-  }
-</style>
+
+    footer {
+      border-top: 1px solid var(--line);
+      margin-top: 64px;
+      padding-top: 22px;
+      font: 600 12px/1.45 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      main { padding-top: 34px; }
+      nav { margin-bottom: 34px; }
+      .cols { grid-template-columns: 1fr; }
+      .figure { padding: 14px; }
+    }
+  </style>
 </head>
 
-<body class="research-page">
-<a class="skip-link" href="#main">Skip to content</a>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
 
-<header class="research-topbar" role="banner">
-  <nav class="research-shell research-nav" aria-label="Research navigation">
+<main id="content">
+  <nav aria-label="Page navigation">
     <a href="/">Bhoomika Hegde</a>
     <a href="/">Home</a>
   </nav>
-</header>
 
-<main id="main">
-  <header class="research-shell research-hero">
-    <div>
-      <p class="eyebrow">Research blog / Computational neuroscience methods</p>
-      <h1>Canine EEG, checked before it is claimed.</h1>
-      <p class="dek">
-        This project asks a practical question: before a model result is turned into a neuroscience story, can we prove the data, labels, quality checks, and validation design are strong enough to carry that story?
-      </p>
-    </div>
-
-    <aside class="hero-card" aria-label="Project summary">
-      <h2>A validation-first framework for canine EEG</h2>
-      <p>
-        The work does not chase the highest classifier score. It builds a careful path from raw Neuroscan CNT files to dog-level statistical evidence, so the final claim is honest, reproducible, and useful.
-      </p>
-      <div class="meta-grid">
-        <div class="meta-item"><span>Raw files</span><b>17 CNT recordings</b></div>
-        <div class="meta-item"><span>Inference unit</span><b>Dog, not epoch</b></div>
-        <div class="meta-item"><span>Downstream cohort</span><b>16 dogs / 2,820 epochs</b></div>
-        <div class="meta-item"><span>Current state</span><b>Auditable, not claim-ready</b></div>
-      </div>
-    </aside>
+  <header>
+    <div class="eyebrow">Research case study</div>
+    <h1>A validation-first pipeline for canine EEG.</h1>
+    <p class="dek">
+      A classifier can produce a number before the science is ready. This project builds the checks
+      that decide what a canine EEG result can responsibly claim.
+    </p>
   </header>
 
-  <div class="research-shell article">
-    <article class="content">
-      <section>
-        <p class="lead">
-          The most interesting result here is not that the classifier wins. It is that the framework knows when the classifier has not earned a biological interpretation yet.
-        </p>
-        <p>
-          That may sound modest, but in EEG it matters. A dataset can contain thousands of epochs while still having only a small number of independent biological subjects. If a model learns dog identity, recording drift, baseline amplitude, or an uncertain label map, the score can look meaningful while the science remains fragile.
-        </p>
-        <p>
-          This project turns those weak points into explicit checks. The positive story is a stronger research habit: validate the pipeline first, then decide what claims the evidence is allowed to support.
-        </p>
+  <p class="lead">
+    The framework audits raw Neuroscan CNT recordings, event integrity, condition-label provenance,
+    canine-specific quality control, confounds, dog-level decoding, empirical nulls, and reproducibility
+    metadata. The goal is not to maximize classification accuracy. The goal is to make every scientific
+    claim traceable to the evidence that supports it.
+  </p>
 
-        <figure class="figure" aria-label="Validation pipeline diagram">
-          <div class="figure-header">
-            <h2 class="figure-title">How the framework thinks</h2>
-            <span class="figure-label">Claim-control pipeline</span>
-          </div>
-          <div class="pipeline">
-            <svg viewBox="0 0 900 280" role="img" aria-labelledby="pipeline-title pipeline-desc">
-              <title id="pipeline-title">Canine EEG validation pipeline</title>
-              <desc id="pipeline-desc">A flow from raw CNT recordings through decoder validation, event checks, condition mapping, quality control, confound analysis, dog-level testing, and bounded claims.</desc>
-              <defs>
-                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-                  <path d="M0,0 L0,6 L9,3 z" fill="#5d7668"></path>
-                </marker>
-              </defs>
-              <rect x="24" y="40" width="170" height="70" rx="4" fill="#ebe2d3" stroke="#d7d0c4"></rect>
-              <text x="109" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Raw CNT files</text>
-              <text x="109" y="93" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#626c67">17 recordings</text>
-
-              <rect x="256" y="40" width="170" height="70" rx="4" fill="#fffdf8" stroke="#d7d0c4"></rect>
-              <text x="341" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Decode safely</text>
-              <text x="341" y="93" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#626c67">int32 + scaling audit</text>
-
-              <rect x="488" y="40" width="170" height="70" rx="4" fill="#fffdf8" stroke="#d7d0c4"></rect>
-              <text x="573" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Check events</text>
-              <text x="573" y="93" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#626c67">counts, triggers, runs</text>
-
-              <rect x="720" y="40" width="156" height="70" rx="4" fill="#fff8e8" stroke="#d7d0c4"></rect>
-              <text x="798" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Label status</text>
-              <text x="798" y="93" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#85601d">candidate mapping</text>
-
-              <rect x="140" y="172" width="170" height="70" rx="4" fill="#fffdf8" stroke="#d7d0c4"></rect>
-              <text x="225" y="202" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Canine QC</text>
-              <text x="225" y="225" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#626c67">threshold provenance</text>
-
-              <rect x="372" y="172" width="170" height="70" rx="4" fill="#fffdf8" stroke="#d7d0c4"></rect>
-              <text x="457" y="202" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Confounds</text>
-              <text x="457" y="225" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#626c67">dog, session, baseline</text>
-
-              <rect x="604" y="172" width="170" height="70" rx="4" fill="#eef6f0" stroke="#d7d0c4"></rect>
-              <text x="689" y="202" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1d2421">Dog-level test</text>
-              <text x="689" y="225" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#2f6b4f">LOGO + nulls</text>
-
-              <line x1="194" y1="75" x2="246" y2="75" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></line>
-              <line x1="426" y1="75" x2="478" y2="75" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></line>
-              <line x1="658" y1="75" x2="710" y2="75" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></line>
-              <path d="M798 110 C798 148, 225 132, 225 162" fill="none" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></path>
-              <line x1="310" y1="207" x2="362" y2="207" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></line>
-              <line x1="542" y1="207" x2="594" y2="207" stroke="#5d7668" stroke-width="2" marker-end="url(#arrow)"></line>
-            </svg>
-          </div>
-          <figcaption class="caption">
-            Each box asks whether the next interpretation is allowed. A warning does not mean the work failed; it means the paper should carry the limitation instead of hiding it.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section>
-        <p class="kicker">The short version</p>
-        <h2 class="section-title">What this work found</h2>
-        <p>
-          The raw EEG import path can be validated. Event integrity can be audited. Human EEG quality-control assumptions can be exposed before they quietly reject every canine recording. Dog identity, session position, and baseline persistence can be measured as possible shortcuts. And condition decoding, when evaluated by leaving out entire dogs, stays near the within-dog shuffled-label null.
-        </p>
-        <p>
-          The conclusion is intentionally bounded: the current evidence package is auditable, but not ready for stronger condition-level neuroscience claims. That is still a useful result. It tells the next dataset, next adapter, and next experiment exactly what must be made clearer.
-        </p>
-
-        <div class="evidence-grid" aria-label="Key numbers">
-          <div class="evidence-card">
-            <b>17/17</b>
-            <span>raw files matched the corrected CNT decoding audit and checksum expectations.</span>
-          </div>
-          <div class="evidence-card">
-            <b>16</b>
-            <span>dogs form the downstream biological inference unit; epochs are nested observations.</span>
-          </div>
-          <div class="evidence-card">
-            <b>0.503</b>
-            <span>leave-one-dog-out macro AUC under candidate condition labels, close to null.</span>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <p class="kicker">Why it matters</p>
-        <h2 class="section-title">A classifier score is not automatically a scientific claim</h2>
-        <p>
-          EEG data are rich, but they are also easy to fool. Many trials from the same animal are not the same as many animals. If train and test folds share the same dog, a model may learn the dog rather than the experimental condition.
-        </p>
-        <p>
-          That is why this framework uses the dog as the unit of inference. The model is asked a harder and more honest question: can the pattern generalize to an unseen dog?
-        </p>
-        <blockquote class="pullquote">
-          The goal is not to make the model look impressive. The goal is to make the evidence difficult to misunderstand.
-        </blockquote>
-        <p>
-          This is the part I like most about the project. It treats "almost, but not yet" as a publishable kind of knowledge. In computational neuroscience, knowing where a claim stops is part of doing the science properly.
-        </p>
-      </section>
-
-      <section>
-        <p class="kicker">Evidence ledger</p>
-        <h2 class="section-title">The main checks, in plain language</h2>
-        <div class="table-wrap" role="region" aria-label="Validation evidence table" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Layer</th>
-                <th scope="col">What was checked</th>
-                <th scope="col">What it means</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Raw decoding</th>
-                <td>32-bit CNT sample structure, checksums, header scaling, and MNE/header agreement.</td>
-                <td>The corrected import path is supported before downstream analysis begins.</td>
-                <td><span class="tag tag-good">Supported</span></td>
-              </tr>
-              <tr>
-                <th scope="row">Events</th>
-                <td>Expected trigger codes, event counts, repetitions, and run-integrity deviations.</td>
-                <td>Recording-level issues become visible instead of being hidden inside pooled epochs.</td>
-                <td><span class="tag tag-watch">Caution</span></td>
-              </tr>
-              <tr>
-                <th scope="row">Labels</th>
-                <td>Trigger-code-to-condition provenance and missing original codebook, task script, and trial logs.</td>
-                <td>Candidate condition labels can be used for pipeline checks, but not treated as verified neuroscience truth.</td>
-                <td><span class="tag tag-stop">Blocked</span></td>
-              </tr>
-              <tr>
-                <th scope="row">Quality control</th>
-                <td>Canine EEG amplitudes, event integrity, bad-channel logic, and threshold provenance.</td>
-                <td>The framework avoids silently applying human EEG thresholds as if they were universal canine standards.</td>
-                <td><span class="tag tag-watch">Needs caveat</span></td>
-              </tr>
-              <tr>
-                <th scope="row">Confounds</th>
-                <td>Dog identity, session position, and baseline-to-post-stimulus persistence.</td>
-                <td>The model is protected from shortcuts that can look like condition decoding.</td>
-                <td><span class="tag tag-watch">Measured</span></td>
-              </tr>
-              <tr>
-                <th scope="row">Generalization</th>
-                <td>Leave-one-dog-out evaluation with within-dog shuffled-label nulls.</td>
-                <td>Current condition decoding stays near null, so broad biological interpretation is not justified yet.</td>
-                <td><span class="tag tag-good">Useful boundary</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section>
-        <p class="kicker">What is interesting</p>
-        <h2 class="section-title">The positive result is a cleaner research standard</h2>
-        <ul class="checks">
-          <li><span><strong>Raw data validation becomes part of the method.</strong> The framework documents why the corrected CNT import path is used, instead of assuming the first loader was trustworthy.</span></li>
-          <li><span><strong>Warnings are preserved.</strong> PASS, WARN, and FAIL states remain visible, which is exactly what a reviewer needs when the dataset is small and heterogeneous.</span></li>
-          <li><span><strong>Dog-level inference is enforced.</strong> The project keeps the biological unit honest: 2,820 epochs do not become 2,820 independent dogs.</span></li>
-          <li><span><strong>Confounds are treated as scientific evidence.</strong> Dog identity, session drift, and baseline persistence are not annoyances; they are part of understanding the dataset.</span></li>
-          <li><span><strong>Reproducibility becomes evidence.</strong> Checksums, configuration, software versions, random seed, report outputs, and clean-release status become part of what the paper can claim.</span></li>
-          <li><span><strong>The result is reusable.</strong> The long-term shape is a dataset-adapter framework, where each new canine EEG dataset brings its own specification, event design, and mapping provenance.</span></li>
-        </ul>
-      </section>
-
-      <section>
-        <p class="kicker">Dataset</p>
-        <h2 class="section-title">Dataset link placeholder</h2>
-        <p>
-          The page is intentionally leaving room for the public dataset link here. The manuscript notes that the original Magyari data and stimulus material are available through the figshare DOIs cited in the original article; once the exact URL or DOI is ready for this site, this block can point readers directly to the raw materials and reproducibility notes.
-        </p>
-        <div class="dataset-box">
-          <strong>Dataset link to add:</strong>
-          <p>Add the public dataset URL, DOI, or repository link here when it is ready.</p>
-          <a href="#" aria-label="Dataset link placeholder">Dataset link pending</a>
-          <!-- Replace href="#" above with the final dataset URL. -->
-        </div>
-      </section>
-
-      <section>
-        <p class="kicker">Final take</p>
-        <h2 class="section-title">A careful no is still progress</h2>
-        <p>
-          This project does not say canine EEG has no useful signal. It says the current evidence, under the current candidate labels and dog-level validation, should not be stretched into a stronger claim than it can support.
-        </p>
-        <p>
-          That is a good outcome for a methods paper. It gives future work a better checklist: recover or verify the condition codebook, keep dogs separated during evaluation, report QC provenance, preserve warnings, and make reproducibility metadata part of the result.
-        </p>
-      </section>
-    </article>
-
-    <aside class="aside" aria-label="Research context">
-      <section class="aside-card">
-        <h2>Safe Claim</h2>
-        <p>
-          A reproducible framework can audit canine EEG decoding, event validity, QC provenance, confounds, and dog-level statistical evidence before biological claims are made.
-        </p>
-      </section>
-
-      <section class="aside-card">
-        <h2>Not Claimed</h2>
-        <ul>
-          <li>No state-of-the-art decoding claim.</li>
-          <li>No clinical diagnosis claim.</li>
-          <li>No generalized canine cognition claim.</li>
-          <li>No olfactory or cancer-detection claim.</li>
-          <li>No universal canine EEG QC standard.</li>
-          <li>No proof that canine EEG lacks condition information.</li>
-        </ul>
-      </section>
-
-      <section class="aside-card">
-        <h2>Best Next Steps</h2>
-        <ul>
-          <li>Recover the original stimulus codebook or trial log.</li>
-          <li>Resolve event and QC findings before stronger claims.</li>
-          <li>Regenerate final reports from a clean release.</li>
-          <li>Add a second real dataset adapter.</li>
-        </ul>
-      </section>
-    </aside>
+  <div class="figure">
+    <svg viewBox="0 0 980 300" role="img" aria-label="Canine EEG validation pipeline">
+      <defs>
+        <marker id="arrowMain" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#6d747d"></path>
+        </marker>
+      </defs>
+      <rect x="30" y="72" width="150" height="82" fill="#e9f0fb" stroke="#315d9f"></rect>
+      <rect x="236" y="72" width="166" height="82" fill="#edf6ef" stroke="#3f7d5a"></rect>
+      <rect x="458" y="72" width="168" height="82" fill="#fff3de" stroke="#a46b22"></rect>
+      <rect x="682" y="72" width="124" height="82" fill="#f7e8e6" stroke="#9d3d38"></rect>
+      <rect x="842" y="72" width="110" height="82" fill="#eef1f4" stroke="#6d747d"></rect>
+      <text x="105" y="102" text-anchor="middle" font-size="16" font-weight="700">Raw CNT</text>
+      <text x="105" y="127" text-anchor="middle" font-size="13">decode + scale</text>
+      <text x="319" y="102" text-anchor="middle" font-size="16" font-weight="700">Events</text>
+      <text x="319" y="127" text-anchor="middle" font-size="13">counts, timing, runs</text>
+      <text x="542" y="102" text-anchor="middle" font-size="16" font-weight="700">Labels + QC</text>
+      <text x="542" y="127" text-anchor="middle" font-size="13">provenance, cohort</text>
+      <text x="744" y="102" text-anchor="middle" font-size="16" font-weight="700">Confounds</text>
+      <text x="744" y="127" text-anchor="middle" font-size="13">dog, session</text>
+      <text x="897" y="102" text-anchor="middle" font-size="16" font-weight="700">Claims</text>
+      <text x="897" y="127" text-anchor="middle" font-size="13">bounded evidence</text>
+      <line x1="180" y1="113" x2="228" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
+      <line x1="402" y1="113" x2="450" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
+      <line x1="626" y1="113" x2="674" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
+      <line x1="806" y1="113" x2="834" y2="113" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMain)"></line>
+      <text x="490" y="222" text-anchor="middle" font-size="13" fill="#5b6470">
+        The pipeline treats validation outputs as scientific evidence, not as background logs.
+      </text>
+    </svg>
+    <div class="caption">
+      Fig. 1 Validation path. Raw signal integrity, event structure, label provenance, QC, confounds,
+      and statistics are checked before interpretation.
+    </div>
   </div>
-</main>
 
-<footer class="research-shell research-footer">
-  Canine EEG Validation Framework &middot; Reproducibility-first computational neuroscience
-</footer>
+  <h2>1. Why this problem matters</h2>
+  <p>
+    EEG machine learning can look larger than it is. A study may contain thousands of epochs, but
+    those epochs can come from a small number of biological subjects. In this case, the downstream
+    analyses use 2,820 epochs from 16 dogs. The dog is the biological unit; the epochs are repeated
+    observations nested inside each dog.
+  </p>
+  <p>
+    That distinction changes the whole analysis. A model that sees epochs from the same dog during
+    training and testing may learn dog identity, recording context, session order, baseline amplitude,
+    or preprocessing artifacts. The scientific question is therefore not simply whether a classifier
+    can predict a label. The question is whether the prediction survives the validation checks needed
+    for a biological claim.
+  </p>
+
+  <div class="cols">
+    <div class="card">
+      <h3>Research unit</h3>
+      <p>The dog is the independent biological unit. Epochs are useful observations, not independent animals.</p>
+    </div>
+    <div class="card">
+      <h3>Model role</h3>
+      <p>Decoding is treated as a validation endpoint, not as an accuracy competition or deep-learning contribution.</p>
+    </div>
+    <div class="card">
+      <h3>Claim style</h3>
+      <p>Every result is tied to what it supports, what it constrains, and what remains unresolved.</p>
+    </div>
+  </div>
+
+  <h2>2. The scientific claims</h2>
+  <p>
+    The project makes methodological claims. These claims are positive, but deliberately specific:
+    they describe what the framework can verify, expose, or constrain in the current canine EEG
+    evidence package.
+  </p>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 1</span>
+    <h3>Raw CNT decoding can be audited and corrected.</h3>
+    <p>
+      The low-level decoding audit identified a concrete import-width failure: 32-bit CNT samples had
+      previously been interpreted as split 16-bit words. The corrected audit supports 32-bit decoding
+      across 17 raw recordings, with official checksum agreement and maximum MNE/header scaling error
+      of 2.91e-11 uV.
+    </p>
+  </div>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 2</span>
+    <h3>Event-code integrity and condition-label validity are different questions.</h3>
+    <p>
+      Numeric trigger codes can be counted, ordered, and checked against expected repetitions without
+      assuming that every code-to-condition mapping is experimentally verified. This separation prevents
+      candidate labels from being promoted into condition-level neuroscience claims.
+    </p>
+  </div>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 3</span>
+    <h3>Canine EEG quality control needs provenance.</h3>
+    <p>
+      The QC layer records recording-level and epoch-level metrics while preserving whether thresholds
+      are exploratory or externally justified. This matters because human-style EEG thresholds can behave
+      poorly on canine recordings; the framework turns that risk into visible evidence.
+    </p>
+  </div>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 4</span>
+    <h3>Dog identity, session position, and baseline persistence are measurable confounds.</h3>
+    <p>
+      The framework reports dog-identity structure in raw embeddings, session-position associations, and
+      baseline-to-response persistence. These findings do not assign a biological cause. They show which
+      structure must be considered before interpreting condition decoding.
+    </p>
+  </div>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 5</span>
+    <h3>Leave-one-dog-out decoding remains close to a dog-preserving null.</h3>
+    <p>
+      Under candidate condition labels, leave-one-dog-out macro AUC is approximately 0.503 and does not
+      exceed the within-dog shuffled-label null reference. This is a useful result: it protects the paper
+      from overstating condition decoding while preserving a clear validation baseline for future work.
+    </p>
+  </div>
+
+  <div class="wide-card">
+    <span class="mini-label">Claim 6</span>
+    <h3>Reproducibility is part of the evidence.</h3>
+    <p>
+      The validation run records raw checksums, configuration hash, software versions, random seed, exact
+      command, and generated report checksums. The result is not just a narrative summary; it is an
+      auditable evidence package.
+    </p>
+  </div>
+
+  <h2>3. Dataset and provenance</h2>
+  <p>
+    The case study uses a public canine EEG dataset associated with auditory word processing. The raw
+    data are represented as 17 numeric Neuroscan CNT recordings, each expected to contain eight channels
+    sampled at 1000 Hz. The expected event design contains trigger codes 1-48, five repetitions per code,
+    and 240 stimulus events per complete recording.
+  </p>
+  <p>
+    The downstream analysis cohort contains 16 dogs and 2,820 epochs. Dog 40 is documented as excluded
+    from downstream analyses because of quality-control and event-integrity concerns. The page leaves
+    the dataset link below as a placeholder so the final DOI or archive URL can be inserted cleanly.
+  </p>
+
+  <div class="dataset-box">
+    <span class="mini-label">Dataset link</span>
+    <p>Add the public dataset URL, DOI, or repository link here when it is ready.</p>
+    <a href="#" aria-label="Dataset link placeholder">Dataset link pending</a>
+    <!-- Replace href="#" above with the final dataset URL. -->
+  </div>
+
+  <h2>4. Methodology</h2>
+  <p>
+    The method is organized as a validation chain. Each stage receives explicit inputs, performs a
+    defined audit, writes machine-readable and human-readable outputs, and constrains the claims that
+    can follow.
+  </p>
+
+  <div class="figure">
+    <svg viewBox="0 0 980 330" role="img" aria-label="Methodology modules">
+      <defs>
+        <marker id="arrowMethod" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#6d747d"></path>
+        </marker>
+      </defs>
+      <rect x="44" y="54" width="186" height="82" fill="#e9f0fb" stroke="#315d9f"></rect>
+      <rect x="286" y="54" width="186" height="82" fill="#edf6ef" stroke="#3f7d5a"></rect>
+      <rect x="528" y="54" width="186" height="82" fill="#fff3de" stroke="#a46b22"></rect>
+      <rect x="770" y="54" width="166" height="82" fill="#f7e8e6" stroke="#9d3d38"></rect>
+      <text x="137" y="84" text-anchor="middle" font-size="15" font-weight="700">decode</text>
+      <text x="137" y="108" text-anchor="middle" font-size="12">CNT, channels, events</text>
+      <text x="379" y="84" text-anchor="middle" font-size="15" font-weight="700">validate</text>
+      <text x="379" y="108" text-anchor="middle" font-size="12">QC, labels, confounds</text>
+      <text x="621" y="84" text-anchor="middle" font-size="15" font-weight="700">evaluate</text>
+      <text x="621" y="108" text-anchor="middle" font-size="12">LOGO + permutation null</text>
+      <text x="853" y="84" text-anchor="middle" font-size="15" font-weight="700">audit claims</text>
+      <text x="853" y="108" text-anchor="middle" font-size="12">support + boundary</text>
+      <line x1="230" y1="95" x2="278" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
+      <line x1="472" y1="95" x2="520" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
+      <line x1="714" y1="95" x2="762" y2="95" stroke="#6d747d" stroke-width="2" marker-end="url(#arrowMethod)"></line>
+      <text x="490" y="212" text-anchor="middle" font-size="13" fill="#5b6470">
+        Every stage asks what the next stage is allowed to claim.
+      </text>
+    </svg>
+    <div class="caption">
+      Fig. 2 Methodological structure. The framework converts validation checks into claim permissions.
+    </div>
+  </div>
+
+  <ul>
+    <li><strong>Raw import:</strong> Decode CNT files as signed little-endian 32-bit samples and verify scaling.</li>
+    <li><strong>Event audit:</strong> Check trigger range, repetitions, missing or extra events, ordering, and run constraints.</li>
+    <li><strong>QC provenance:</strong> Compute recording and epoch metrics while keeping threshold status explicit.</li>
+    <li><strong>Confound analysis:</strong> Measure dog identity, session position, and baseline-persistence structure.</li>
+    <li><strong>Statistics:</strong> Use leave-one-dog-out evaluation, within-dog permutation nulls, and dog-level bootstrap summaries.</li>
+  </ul>
+
+  <h2>5. Results</h2>
+  <p>
+    The main result is a validated evidence boundary. The corrected CNT import path is supported.
+    Recording-level event deviations are visible. QC provenance is explicit. Confounds are measured.
+    Dog-level decoding is near null under the current candidate labels.
+  </p>
+
+  <div class="table-wrap" role="region" aria-label="Summary of results" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Result</th>
+          <th scope="col">Evidence</th>
+          <th scope="col">Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">CNT decoding</th>
+          <td>17/17 files show corrected 32-bit consistency and checksum agreement.</td>
+          <td>The raw signal path is reproducible and auditable.</td>
+        </tr>
+        <tr>
+          <th scope="row">Event integrity</th>
+          <td>9 recordings match the exact event design; 8 require event review.</td>
+          <td>Event quality is recording-specific and should not be hidden by pooling.</td>
+        </tr>
+        <tr>
+          <th scope="row">Condition mapping</th>
+          <td>The original trigger-code-to-stimulus codebook was not recovered locally.</td>
+          <td>Condition labels remain candidate labels for validation analyses.</td>
+        </tr>
+        <tr>
+          <th scope="row">Dog-level decoding</th>
+          <td>Macro AUC is about 0.503 and remains below the within-dog null reference.</td>
+          <td>The current evidence supports a careful null decoding result, not a broad cognition claim.</td>
+        </tr>
+        <tr>
+          <th scope="row">Reproducibility</th>
+          <td>Checksums, config hash, software versions, command, seed, and report outputs are recorded.</td>
+          <td>The analysis is packaged as an auditable research object.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    The important point is not that the classifier is weak. The important point is that the framework
+    can tell when a classifier result should remain a validation result rather than becoming a biological claim.
+  </div>
+
+  <h2>6. How to read the null decoding result</h2>
+  <p>
+    A near-null decoding result is not the same as proving there is no neural information. It means that
+    under the current candidate labels, current feature set, fixed lightweight models, and leave-one-dog-out
+    evaluation, condition decoding does not exceed a dog-preserving shuffled-label reference.
+  </p>
+  <p>
+    That is still scientifically useful. It prevents a model score from being stretched into semantic decoding,
+    canine cognition, clinical interpretation, or population-level generalization. It also gives the next study
+    a concrete checklist: verified condition mapping, stronger dog-level cohorts, transparent QC, and the same
+    subject-independent evaluation discipline.
+  </p>
+
+  <h2>7. What makes the framework reusable</h2>
+  <p>
+    The reusable part is the validation structure. New datasets can provide their own dataset specification,
+    event design, stimulus mapping, adapter, QC provenance, and report outputs. The same logic can then ask:
+    what does this dataset support, what needs a caveat, and what should remain a future claim?
+  </p>
+  <p>
+    That makes the project a neuroinformatics contribution rather than a one-off classifier. It is designed
+    to make small canine EEG studies easier to inspect, reproduce, compare, and improve.
+  </p>
+
+  <footer>
+    Canine EEG Validation Framework &middot; reproducibility-first computational neuroscience
+  </footer>
+</main>
 </body>
 </html>
