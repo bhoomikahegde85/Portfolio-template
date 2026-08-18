@@ -139,11 +139,9 @@
     <div class="section-inner">
       <h2 class="section-label" id="about-heading"><span class="label-stitch" aria-hidden="true"></span>About</h2>
       <div class="section-body about-body reveal">
-        <p class="about-lead">
-          I have always had the habit of examining scientific claims to find out how they function.
-        </p>
         <p>
-          The fact that I graduated from PES University in AI/ML gave my curiosity a definite focus on research into machine learning and deep learning, on carrying out rigorous experimentation, and on pursuing outlandish ideas.
+          I have always had the habit of examining scientific claims to find out how they function.
+          The fact that I graduated from PES University in AI&ML gave my curiosity a definite focus on research into machine learning and deep learning, on carrying out rigorous experimentation, and on pursuing outlandish ideas.
         </p>
       </div>
     </div>
@@ -173,7 +171,16 @@
                 <div class="pub-year">2026</div>
                 <div class="pub-details">
                   <p class="pub-title">Discrete Representation Learning: A Review</p>
-                  <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>ICMLC 2026</em></p>
+                  <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>ICMLC</em></p>
+                  <div class="pub-links"><span class="pub-badge pub-badge--accepted">TO BE PUBLISHED</span></div>
+                </div>
+              </li>
+
+              <li class="pub-item reveal">
+                <div class="pub-year">2026</div>
+                <div class="pub-details">
+                  <p class="pub-title">Feature-Space Regularization via Local Counterfactual Contrast Signals</p>
+                  <p class="pub-meta">B. R. Hegde et al. &nbsp;·&nbsp; <em>ICDM</em></p>
                   <div class="pub-links"><span class="pub-badge pub-badge--accepted">TO BE PUBLISHED</span></div>
                 </div>
               </li>
@@ -217,9 +224,9 @@
             <div class="timeline-content">
               <h3 class="timeline-role">AI Engineer Intern</h3>
               <ul>
-                <li>Built a voice AI orchestration backend integrating speech-to-text, intent parsing, and app-side actions across 60+ flows, enabling end-to-end voice-driven user interactions.</li>
-                <li>Engineered real-time communication systems using WebSockets and Agora SDK with state management, exponential backoff, and heartbeat monitoring for reliability on unstable networks.</li>
-                <li>Designed an agent-based integration layer using MCP with clear service boundaries and event contracts; applied domain driven design and resolved failure modes across multi-service interactions while maintaining CI/CD stability.</li>
+                <li>Built the backend for a voice AI app that connected speech-to-text, intent detection, and app actions across 60+ user flows.</li>
+                <li>Worked on real-time calling and messaging with WebSockets and Agora SDK, adding retries and heartbeat checks so the app handled weak networks better.</li>
+                <li>Built an MCP-based layer for connecting agents to services, with clear events and error handling across multiple backend services.</li>
               </ul>
             </div>
           </li>
@@ -232,9 +239,9 @@
             <div class="timeline-content">
               <h3 class="timeline-role">AIML Engineer Intern</h3>
               <ul>
-                <li>Built a modular data processing pipeline (Python) spanning 5 blockchain protocols for bot detection, enabling protocol-specific preprocessing components to evolve independently.</li>
-                <li>Implemented end-to-end traceability across the pipeline, tagging each transaction from ingestion through classification to ensure debuggability and auditability.</li>
-                <li>Improved production readiness by reducing silent failure modes, adding validation checks at stage boundaries, and ensuring error states were logged and observable.</li>
+                <li>Built a Python data pipeline for bot detection across 5 blockchain protocols, with separate preprocessing steps for each protocol.</li>
+                <li>Added tracking for each transaction from ingestion to final label, making it easier to debug and audit the pipeline.</li>
+                <li>Added validation checks and clearer logs so pipeline failures were easier to catch and fix.</li>
               </ul>
             </div>
           </li>
@@ -248,9 +255,9 @@
               <h3 class="timeline-role">Teaching Assistant — Computational Data Science</h3>
               <p class="timeline-byline">Under <a href="https://scholar.google.com/citations?user=d6gtOwwAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener noreferrer">Dr. Bhaskarjyothi Das</a></p>
               <ul>
-                <li>Worked on computational data science assignments at the ML + DS boundary: data cleaning, feature design, statistical reasoning, model selection, and evaluation.</li>
-                <li>Reviewed ML and data science project workflows for leakage, weak baselines, unclear metrics, and conclusions that went beyond what the results supported.</li>
-                <li>Mentored teams on project architecture, debugging strategies, and efficient algorithm implementation; standardised grading rubrics to prevent assessment drift across 250 submissions.</li>
+                <li>Helped students with data science and ML work, including cleaning data, building features, choosing models, and evaluating results.</li>
+                <li>Reviewed student projects for data leakage, weak baselines, unclear metrics, and claims that were not supported by the results.</li>
+                <li>Mentored teams on project structure, debugging, and algorithm implementation; also helped keep grading consistent across 250 submissions.</li>
               </ul>
             </div>
           </li>
@@ -263,7 +270,7 @@
             <div class="timeline-content">
               <h3 class="timeline-role">Teaching Assistant</h3>
               <ul>
-                <li>Guided student teams building a blockchain-based learning platform, focusing on contract/UI integration, failure cases, and clean handoffs between smart-contract logic and application workflows.</li>
+                <li>Guided student teams building a blockchain-based learning platform, especially the link between smart contracts, the UI, and failure handling.</li>
               </ul>
             </div>
           </li>
@@ -276,9 +283,9 @@
             <div class="timeline-content">
               <h3 class="timeline-role">Engineer Intern</h3>
               <ul>
-                <li>Developed a Python-based ETL system to parse and normalise EPA documents into structured outputs using a modular plugin architecture for inconsistent formats.</li>
-                <li>Integrated a multi-step reasoning pipeline using ReAct and AutoGen; added validation and logging at each stage to prevent silent data corruption.</li>
-                <li>Collaborated with cross-functional teams, ensuring modular updates without breaking downstream pipeline components.</li>
+                <li>Built a Python ETL system that turned EPA documents with different formats into clean, structured outputs.</li>
+                <li>Used ReAct and AutoGen for multi-step document processing, with checks and logs at each step to catch bad outputs early.</li>
+                <li>Worked with different teams to update parts of the pipeline without breaking later steps.</li>
               </ul>
             </div>
           </li>
@@ -291,8 +298,8 @@
             <div class="timeline-content">
               <h3 class="timeline-role">Summer Intern</h3>
               <ul>
-                <li>Built a chatbot leveraging Ollama and LlamaIndex within a Retrieval-Augmented Generation (RAG) pipeline, aligning with modern ML pipeline practices and recommendation systems.</li>
-                <li>Conducted a comparative analysis of different RAG pipeline stages to identify the most effective approach for distinct use cases, reinforcing systematic evaluation techniques.</li>
+                <li>Built a chatbot using Ollama and LlamaIndex with a RAG pipeline, so answers could be grounded in retrieved documents.</li>
+                <li>Compared different RAG pipeline setups to understand which worked better for different use cases.</li>
               </ul>
             </div>
           </li>
@@ -316,7 +323,7 @@
               <h3 class="edu-degree">B.Tech — Computer Science &amp; Engineering (AI &amp; ML)</h3>
               <p class="edu-institution">PES University · Bengaluru</p>
               <ul class="edu-achievements">
-                <li>DAC Scholarship recipient (x6)</li>
+                <li>DAC Scholarship recipient</li>
                 <li>Head of Sponsorship, Aatmatrisha '25</li>
                 <li>Head of Sponsorship, Chords '24</li>
                 <li>Head of Social Media, AIKYA</li>
@@ -356,7 +363,7 @@
                aria-label="Dog Activity Recognition System — view on GitHub">
               <p class="card-eyebrow">Systems · ML · 2024</p>
               <h3 class="card-title" tabindex="-1">Dog Activity Recognition System</h3>
-              <p class="card-body">Multi-service, event-driven platform (Python, Kafka, PostgreSQL, FastAPI, Docker) with a unified session-ingest system time-aligning video frames with biosignal streams. Deployed a CLIP-based zero-shot inference service with audit logs, dead-letter queues, and retry mechanisms for reliability under failure.</p>
+              <p class="card-body">Built a system to study dog activity from video and biosignal data. It uses Python, Kafka, PostgreSQL, FastAPI, and Docker to keep video frames and sensor streams aligned in time. A CLIP-based inference service supports zero-shot activity recognition, with logs, retries, and dead-letter queues for safer failure handling.</p>
               <div class="card-footer">
                 <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>Kafka</li><li>FastAPI</li><li>Docker</li><li>CLIP</li></ul>
                 <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
@@ -371,7 +378,7 @@
                aria-label="Image Representation with ViT and Product Quantisation — view on Google colab">
               <p class="card-eyebrow">ML · Research · 2024</p>
               <h3 class="card-title" tabindex="-1">Image Representation via ViT + Product Quantisation</h3>
-              <p class="card-body">Identified limitations in VQ-VAE2 and proposed PQ-VAE, combining Vision Transformers with structured latent decomposition and differentiable codebook learning. Improved reconstruction quality and compression efficiency over baseline, validated using SNR and SSIM. Companion paper published at ICMLC 2026.</p>
+              <p class="card-body">Worked on a new image representation method after finding limits in VQ-VAE2. The project combines Vision Transformers with product quantisation to learn compact image codes. Results were checked using reconstruction quality, SNR, and SSIM, and the companion paper is accepted for ICMLC 2026.</p>
               <div class="card-footer">
                 <ul class="tag-row" aria-label="Technologies"><li>PyTorch</li><li>ViT</li><li>VQ-VAE</li><li>SSIM</li></ul>
                 <span class="card-gh-label">View on Google colab <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
@@ -386,7 +393,7 @@
                 aria-label="Relational Knowledge Graph for Question Answering on Relational Databases — view on GitHub">
               <p class="card-eyebrow">Backend · Systems · 2024</p>
               <h3 class="card-title" tabindex="-1">Relational Knowledge Graph for Question Answering on Relational Databases</h3>
-              <p class="card-body">Built a relational knowledge-graph layer for question answering over structured databases, focusing on schema-aware retrieval, query planning, and traceable reasoning over relational context.</p>
+              <p class="card-body">Built a question-answering layer for relational databases. The system reads the database schema, builds a relational knowledge graph, and uses that structure to plan queries and trace how an answer was found.</p>
               <div class="card-footer">
                 <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>SQL</li><li>Graph Theory</li></ul>
                 <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
@@ -401,7 +408,7 @@
                aria-label="Academic Management System — view on GitHub">
               <p class="card-eyebrow">Backend · Architecture · 2024</p>
               <h3 class="card-title" tabindex="-1">Academic Management System</h3>
-              <p class="card-body">Microservice-based university portal with clearly defined service boundaries and API contracts enabling independent deployment. Domain-driven design separating scheduling, feedback, and user management into distinct bounded contexts. Containerised with Docker.</p>
+              <p class="card-body">Built a university portal using separate backend services for scheduling, feedback, and user management. Each service had its own API contract, making it easier to update one part without touching the rest. The system was containerised with Docker.</p>
               <div class="card-footer">
                 <ul class="tag-row" aria-label="Technologies"><li>Docker</li><li>REST</li><li>DDD</li><li>Microservices</li></ul>
                 <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
