@@ -51,9 +51,9 @@
       <li><a href="#about">About</a></li>
       <li><a href="research.html">Research</a></li>
       <li><a href="#publications">Publications</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#education">Education</a></li>
-      <li><a href="#projects">Projects</a></li>
       <li><a href="#feed">LinkedIn</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -65,10 +65,10 @@
     <ul role="list">
       <li><a href="#about">About</a></li>
       <li><a href="research.html">Research</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#education">Education</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#publications">Publications</a></li>
       <li><a href="#feed">From LinkedIn</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -191,6 +191,93 @@
       </section>
 
   <!-- ============================================================
+       PROJECTS — interactive filter + flip-to-detail cards
+       Each card links to its GitHub repo (data-repo attribute)
+       ============================================================ -->
+  <section class="section" id="projects" aria-labelledby="projects-heading">
+    <div class="section-inner">
+      <h2 class="section-label" id="projects-heading"><span class="label-stitch" aria-hidden="true"></span>Projects</h2>
+      <div class="section-body">
+
+        <!-- ✏️ Filter chips — update data-filter values to match your project tags -->
+        <div class="filter-row" role="group" aria-label="Filter projects by category">
+          <button class="filter-chip is-active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="systems">Systems</button>
+          <button class="filter-chip" data-filter="ml">ML / Research</button>
+          <button class="filter-chip" data-filter="backend">Backend</button>
+        </div>
+
+        <ul class="card-grid" role="list">
+
+          <!-- ✏️ Edit or duplicate .card blocks below. Set data-category to match a filter chip above. -->
+
+          <li data-category="systems ml">
+            <a class="card reveal"
+               href="https://github.com/bhoomikahegde85/dog-activity-system"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Dog Activity Recognition System — view on GitHub">
+              <p class="card-eyebrow">Systems · ML · 2024</p>
+              <h3 class="card-title" tabindex="-1">Dog Activity Recognition System</h3>
+              <p class="card-body">Built a system to study dog activity from video and biosignal data. It uses Python, Kafka, PostgreSQL, FastAPI, and Docker to keep video frames and sensor streams aligned in time. A CLIP-based inference service supports zero-shot activity recognition, with logs, retries, and dead-letter queues for safer failure handling.</p>
+              <div class="card-footer">
+                <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>Kafka</li><li>FastAPI</li><li>Docker</li><li>CLIP</li></ul>
+                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+              </div>
+            </a>
+          </li>
+
+          <li data-category="ml">
+            <a class="card reveal"
+               href="https://drive.google.com/file/d/1oLzT2VzDT0Wc3tvFH_QNETKO6q0KNTtR/view?usp=sharing"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Image Representation with ViT and Product Quantisation — view on Google colab">
+              <p class="card-eyebrow">ML · Research · 2024</p>
+              <h3 class="card-title" tabindex="-1">Image Representation via ViT + Product Quantisation</h3>
+              <p class="card-body">Worked on a new image representation method after finding limits in VQ-VAE2. The project combines Vision Transformers with product quantisation to learn compact image codes. Results were checked using reconstruction quality, SNR, and SSIM, and the companion paper is accepted for ICMLC 2026.</p>
+              <div class="card-footer">
+                <ul class="tag-row" aria-label="Technologies"><li>PyTorch</li><li>ViT</li><li>VQ-VAE</li><li>SSIM</li></ul>
+                <span class="card-gh-label">View on Google colab <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+              </div>
+            </a>
+          </li>
+
+          <li data-category="backend systems">
+            <a class="card reveal"
+                href="https://github.com/bhoomikahegde85/Relational-Knowledge-graph-for-question-answering-on-relational-databases"
+                target="_blank" rel="noopener noreferrer"
+                aria-label="Relational Knowledge Graph for Question Answering on Relational Databases — view on GitHub">
+              <p class="card-eyebrow">Backend · Systems · 2024</p>
+              <h3 class="card-title" tabindex="-1">Relational Knowledge Graph for Question Answering on Relational Databases</h3>
+              <p class="card-body">Built a question-answering layer for relational databases. The system reads the database schema, builds a relational knowledge graph, and uses that structure to plan queries and trace how an answer was found.</p>
+              <div class="card-footer">
+                <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>SQL</li><li>Graph Theory</li></ul>
+                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+              </div>
+            </a>
+          </li>
+
+          <li data-category="backend systems">
+            <a class="card reveal"
+               href="https://github.com/deekshitasriyaak/CC_SectionA_Team14"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Academic Management System — view on GitHub">
+              <p class="card-eyebrow">Backend · Architecture · 2024</p>
+              <h3 class="card-title" tabindex="-1">Academic Management System</h3>
+              <p class="card-body">Built a university portal using separate backend services for scheduling, feedback, and user management. Each service had its own API contract, making it easier to update one part without touching the rest. The system was containerised with Docker.</p>
+              <div class="card-footer">
+                <ul class="tag-row" aria-label="Technologies"><li>Docker</li><li>REST</li><li>DDD</li><li>Microservices</li></ul>
+                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+              </div>
+            </a>
+          </li>
+
+        </ul>
+        <p class="filter-empty" hidden>No projects match this filter yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
        EXPERIENCE
        ============================================================ -->
   <section class="section" id="experience" aria-labelledby="experience-heading">
@@ -201,20 +288,20 @@
 
           <!-- ✏️ Edit or duplicate .timeline-item blocks below -->
 
-          <!--  <li class="timeline-item reveal">
+          <li class="timeline-item reveal">
             <div class="timeline-meta">
-              <time class="timeline-period">Aug 2026 — Present</time>
+              <time class="timeline-period">Jul 2026 — Present</time>
               <span class="timeline-org">WLDD</span>
             </div>
             <div class="timeline-content">
-              <h3 class="timeline-role">AI Engineer Intern</h3>
+              <h3 class="timeline-role">AIML Engineer Intern</h3>
               <ul>
-                <li>Building a two-stage creator matching pipeline for Instagram influencer discovery, combining LLM-based semantic profile extraction with sentence-transformer embeddings for retrieval and ranking.</li>
-                <li>Developing the FastAPI backend and SQLite data layer powering campaign-brief-to-shortlist matching, with a Streamlit/Vite frontend for review and iteration.</li>
-                <li>Working on constraint extraction and grounded ranking logic to translate natural-language campaign briefs into filtered, explainable creator shortlists.</li>
+                <li>Building a backend microservice that collects creator profiles from Instagram and Twitter, stores clean metadata, and adds AI-generated summaries and embeddings.</li>
+                <li>Designed a two-stage async pipeline for discovery and enrichment, using BullMQ workers and MongoDB so creator records can be reprocessed without blocking new ingestion.</li>
+                <li>Implementing platform-specific scrapers and content-analysis flows that support internal apps like DMS, SOLO, meme'd, and a future AI creator-search chatbot.</li>
               </ul>
             </div>
-          </li>-->
+          </li>
 
           <li class="timeline-item reveal">
             <div class="timeline-meta">
@@ -331,93 +418,6 @@
             </div>
           </li>
         </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       PROJECTS — interactive filter + flip-to-detail cards
-       Each card links to its GitHub repo (data-repo attribute)
-       ============================================================ -->
-  <section class="section" id="projects" aria-labelledby="projects-heading">
-    <div class="section-inner">
-      <h2 class="section-label" id="projects-heading"><span class="label-stitch" aria-hidden="true"></span>Projects</h2>
-      <div class="section-body">
-
-        <!-- ✏️ Filter chips — update data-filter values to match your project tags -->
-        <div class="filter-row" role="group" aria-label="Filter projects by category">
-          <button class="filter-chip is-active" data-filter="all">All</button>
-          <button class="filter-chip" data-filter="systems">Systems</button>
-          <button class="filter-chip" data-filter="ml">ML / Research</button>
-          <button class="filter-chip" data-filter="backend">Backend</button>
-        </div>
-
-        <ul class="card-grid" role="list">
-
-          <!-- ✏️ Edit or duplicate .card blocks below. Set data-category to match a filter chip above. -->
-
-          <li data-category="systems ml">
-            <a class="card reveal"
-               href="https://github.com/bhoomikahegde85/dog-activity-system"
-               target="_blank" rel="noopener noreferrer"
-               aria-label="Dog Activity Recognition System — view on GitHub">
-              <p class="card-eyebrow">Systems · ML · 2024</p>
-              <h3 class="card-title" tabindex="-1">Dog Activity Recognition System</h3>
-              <p class="card-body">Built a system to study dog activity from video and biosignal data. It uses Python, Kafka, PostgreSQL, FastAPI, and Docker to keep video frames and sensor streams aligned in time. A CLIP-based inference service supports zero-shot activity recognition, with logs, retries, and dead-letter queues for safer failure handling.</p>
-              <div class="card-footer">
-                <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>Kafka</li><li>FastAPI</li><li>Docker</li><li>CLIP</li></ul>
-                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
-              </div>
-            </a>
-          </li>
-
-          <li data-category="ml">
-            <a class="card reveal"
-               href="https://drive.google.com/file/d/1oLzT2VzDT0Wc3tvFH_QNETKO6q0KNTtR/view?usp=sharing"
-               target="_blank" rel="noopener noreferrer"
-               aria-label="Image Representation with ViT and Product Quantisation — view on Google colab">
-              <p class="card-eyebrow">ML · Research · 2024</p>
-              <h3 class="card-title" tabindex="-1">Image Representation via ViT + Product Quantisation</h3>
-              <p class="card-body">Worked on a new image representation method after finding limits in VQ-VAE2. The project combines Vision Transformers with product quantisation to learn compact image codes. Results were checked using reconstruction quality, SNR, and SSIM, and the companion paper is accepted for ICMLC 2026.</p>
-              <div class="card-footer">
-                <ul class="tag-row" aria-label="Technologies"><li>PyTorch</li><li>ViT</li><li>VQ-VAE</li><li>SSIM</li></ul>
-                <span class="card-gh-label">View on Google colab <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
-              </div>
-            </a>
-          </li>
-
-          <li data-category="backend systems">
-            <a class="card reveal"
-                href="https://github.com/bhoomikahegde85/Relational-Knowledge-graph-for-question-answering-on-relational-databases"
-                target="_blank" rel="noopener noreferrer"
-                aria-label="Relational Knowledge Graph for Question Answering on Relational Databases — view on GitHub">
-              <p class="card-eyebrow">Backend · Systems · 2024</p>
-              <h3 class="card-title" tabindex="-1">Relational Knowledge Graph for Question Answering on Relational Databases</h3>
-              <p class="card-body">Built a question-answering layer for relational databases. The system reads the database schema, builds a relational knowledge graph, and uses that structure to plan queries and trace how an answer was found.</p>
-              <div class="card-footer">
-                <ul class="tag-row" aria-label="Technologies"><li>Python</li><li>SQL</li><li>Graph Theory</li></ul>
-                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
-              </div>
-            </a>
-          </li>
-
-          <li data-category="backend systems">
-            <a class="card reveal"
-               href="https://github.com/deekshitasriyaak/CC_SectionA_Team14"
-               target="_blank" rel="noopener noreferrer"
-               aria-label="Academic Management System — view on GitHub">
-              <p class="card-eyebrow">Backend · Architecture · 2024</p>
-              <h3 class="card-title" tabindex="-1">Academic Management System</h3>
-              <p class="card-body">Built a university portal using separate backend services for scheduling, feedback, and user management. Each service had its own API contract, making it easier to update one part without touching the rest. The system was containerised with Docker.</p>
-              <div class="card-footer">
-                <ul class="tag-row" aria-label="Technologies"><li>Docker</li><li>REST</li><li>DDD</li><li>Microservices</li></ul>
-                <span class="card-gh-label">View on GitHub <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
-              </div>
-            </a>
-          </li>
-
-        </ul>
-        <p class="filter-empty" hidden>No projects match this filter yet.</p>
       </div>
     </div>
   </section>
