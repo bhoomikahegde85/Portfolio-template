@@ -292,6 +292,11 @@ main > .section:nth-of-type(even) { background: var(--bg-alt); border-top-color:
 }
 .timeline-role { font-size: 1.02rem; font-weight: 600; color: var(--ink); margin-bottom: .15rem; }
 .timeline-byline { font-size: .78rem; color: var(--ink-soft); font-style: italic; margin-bottom: .5rem; }
+.timeline-byline a {
+  color: var(--pink-deep);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: .02em;
+}
 .timeline-content ul { list-style: none; display: flex; flex-direction: column; gap: .42rem; margin-bottom: .8rem; }
 .timeline-content ul li { font-size: .875rem; color: var(--ink-soft); line-height: 1.62; padding-left: 1.1rem; position: relative; }
 .timeline-content ul li::before { content: '✦'; position: absolute; left: 0; top: .05em; color: var(--butter-d); font-size: .7em; }
