@@ -343,19 +343,12 @@
   </header>
 
   <p class="lead">
-    The classifier is used as a validation probe, not as the main result. If a score depends on dogs
-    leaking across splits, uncertain labels, or a raw import bug, it should not become a neuroscience claim.
-    In the current run, leave-one-dog-out decoding gives macro AUC around 0.503. Since 0.5 is chance
-    level for AUC, this says the model is not separating the candidate conditions beyond the null.
+    The classifier is used as a validation probe, not as the main result. Before reading the score, I
+    check whether the signal import, event structure, label provenance, QC choices, dog-level splits,
+    and null comparison are strong enough to support interpretation. In the current run,
+    leave-one-dog-out decoding gives macro AUC around 0.503. Since 0.5 is chance level for AUC, this
+    says the current candidate labels and features do not separate the conditions beyond the null.
   </p>
-
-  <div class="tldr">
-    <p>
-      <strong>TL;DR:</strong> The analysis found a CNT import issue, kept trigger checks separate from
-      label validity, ran dog level decoding, and treated the near null AUC as a limit on what the data
-      can support rather than a reason to tune a bigger model.
-    </p>
-  </div>
 
   <div class="figure">
     <svg viewBox="0 0 980 300" role="img" aria-label="Canine EEG validation pipeline">
@@ -458,9 +451,10 @@
     <span class="mini-label">Confounds</span>
     <h3>Look for dog and session structure before interpreting labels.</h3>
     <p>
-      The analysis checks whether embeddings carry dog identity, whether session position tracks labels,
-      and whether baseline activity persists into the response window. If that structure is present, decoding can
-      reflect the recording setup before it reflects the condition.
+      The analysis checks whether embeddings, a 3-axis PCA of the same 88 features used only for this
+      confound visualization and not by the decoder, carry dog identity. It also checks whether session
+      position tracks labels, and whether baseline activity persists into the response window. If that
+      structure is present, decoding can reflect the recording setup before it reflects the condition.
     </p>
   </div>
 
@@ -468,9 +462,10 @@
     <span class="mini-label">Decoding</span>
     <h3>Use dog level splits and a dog preserving null.</h3>
     <p>
-      With candidate condition labels, leave-one-dog-out macro AUC is about 0.503 and does not exceed
-      the within dog shuffled label null. Since 0.5 is chance level for AUC, this result says the
-      current labels and features do not support a condition decoding claim.
+      With candidate condition labels, leave-one-dog-out macro AUC is 0.5034. The within dog shuffled
+      label null (20 permutations per dog) averages 0.4963, SD 0.0091, 95th percentile 0.5095; no dog
+      fold beats its own null p95. Since 0.5 is chance level for AUC, this result says the current
+      labels and features do not support a condition decoding claim.
     </p>
   </div>
 
@@ -513,12 +508,19 @@
     and macro AUC is compared with a within dog shuffled label null. This keeps the evaluation focused
     on subject independent signal instead of repeated epochs from the same dog.
   </p>
+  <p>
+    Each epoch is reduced to 88 features: 8 channels times 11 measures each (five band powers, three
+    Hjorth parameters, line length, mean, variance). A scaled logistic regression is fit per fold with
+    hyperparameters fixed in advance, not tuned on the held out dog. The null comes from 20 within dog
+    label permutations per dog, so each dog gets its own null distribution instead of one pooled number.
+  </p>
 
   <h2>5. Results</h2>
   <p>
-    The main result is a cleaner evidence base for canine EEG decoding. The raw CNT path is corrected,
-    event issues are visible instead of hidden, QC choices are explicit, confounds are measured, and
-    dog level decoding has a clear null reference.
+    The AUC number is not the main output here. The CNT import bug is fixed and checksum verified,
+    event issues are logged per recording instead of pooled over, QC thresholds are stated instead of
+    assumed, confounds are checked directly, and dog level decoding has an actual null distribution to
+    compare against.
   </p>
 
   <div class="table-wrap" role="region" aria-label="Summary of results" tabindex="0">
@@ -548,7 +550,7 @@
         </tr>
         <tr>
           <th scope="row">Dog level decoding</th>
-          <td>Macro AUC is about 0.503, close to the 0.5 chance level, and remains below the within dog null reference.</td>
+          <td>Macro AUC is 0.5034 (88 band power / Hjorth features, logistic regression, leave-one-dog-out). Within dog shuffled null: mean 0.4963, SD 0.0091, p95 0.5095 across 20 permutations per dog; 0 of 16 dog folds exceed their own null p95.</td>
           <td>The result gives a calibrated baseline for future labels, features, and larger dog cohorts.</td>
         </tr>
         <tr>
@@ -561,8 +563,9 @@
   </div>
 
   <div class="note">
-    A low AUC is not the main result. The result is knowing when a model output is only a validation
-    result, not a biological finding.
+    0.5034 does not mean the classifier failed. It means these candidate labels and features carry no
+    condition signal beyond chance under this evaluation, a statement about the current inputs, not a
+    claim about canine word processing.
   </div>
 
   <h2>6. Limitations and open questions</h2>
@@ -589,9 +592,6 @@
     claims. Because comparable canine EEG recordings are not easy to find, I have contacted a couple of
     other authors about related data. A second dataset would make it possible to test whether the same
     import, label, QC, and subject split issues appear again.
-  </p>
-  <p>
-    The framework is a starting point for that comparison, not the final answer.
   </p>
 
   <footer>
