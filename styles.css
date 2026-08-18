@@ -45,7 +45,7 @@
   --shadow-lift: 0 22px 48px rgba(217,120,150,.18), 0 6px 16px rgba(232,184,75,.10);
 
   --section-gap: clamp(1.6rem, 3.3vw, 2.75rem);
-  --section-gap-compact: clamp(2rem, 3.8vw, 3rem);
+  --section-gap-compact: clamp(3.2rem, 6vw, 5rem);
   --content-max: 800px;
   --page-pad: clamp(1.25rem, 5vw, 3rem);
   --nav-h: 64px;
@@ -162,7 +162,7 @@ button { font: inherit; }
   position: relative; overflow: hidden;
   min-height: auto;
   display: flex; align-items: center; justify-content: center;
-  padding: clamp(3.7rem, 9vh, 5.8rem) var(--page-pad) clamp(2.4rem, 5.6vh, 3.6rem);
+  padding: clamp(4rem, 10vh, 6.6rem) var(--page-pad) clamp(2.6rem, 6.2vh, 4.2rem);
   text-align: center;
 }
 .hero-blob {
